@@ -21,9 +21,9 @@ WORKDIR /app
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=5173
 
-EXPOSE 3000
+EXPOSE 5173
 CMD ["npm", "run", "start"]
 
 # -------------------
@@ -32,11 +32,10 @@ CMD ["npm", "run", "start"]
 FROM node:22-slim AS dev
 WORKDIR /app
 
-
 ENV NODE_ENV=development
-ENV PORT=3000
+ENV PORT=5173
 
-EXPOSE 3000
+EXPOSE 5173
 
 COPY package*.json ./
 RUN npm install
