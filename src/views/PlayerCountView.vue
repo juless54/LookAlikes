@@ -22,7 +22,7 @@ const { playerNamesPhase } = gameStateStore
           <h2>Innocents</h2>
           <input
             type="number"
-            :value="normalPlayerCount"
+            v-model.number="normalPlayerCount"
             class="size-12 bg-ubox outline-none rounded-md ps-2 text-tplaceholder"
           />
         </div>
@@ -30,7 +30,7 @@ const { playerNamesPhase } = gameStateStore
           <h2>Imposteurs</h2>
           <input
             type="number"
-            :value="impostorPlayerCount"
+            v-model.number="impostorPlayerCount"
             class="size-12 bg-ubox outline-none rounded-md ps-2 text-tplaceholder"
           />
         </div>
