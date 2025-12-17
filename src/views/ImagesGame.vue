@@ -1,7 +1,14 @@
-<script setup></script>
+<script setup>
+import PlayerCountView from './PlayerCountView.vue'
+import { useGameStateStore } from '@/stores/gamestate'
+import { storeToRefs } from 'pinia'
+
+const gameStateStore = useGameStateStore()
+const { gameState } = storeToRefs(gameStateStore)
+</script>
 
 <template>
   <main>
-    <h1 class="text-2xl text-red-500">Jouer avec les images</h1>
+    <PlayerCountView v-show="gameState === 'PlayerCount'" />
   </main>
 </template>
