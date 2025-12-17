@@ -2,9 +2,15 @@
 import { useGameStore } from '@/stores/game'
 import { useGameStateStore } from '@/stores/gamestate'
 import { storeToRefs } from 'pinia'
+import Button from '@/components/Button.vue'
 
+// load game store
 const gameStore = useGameStore()
 const { normalPlayerCount, impostorPlayerCount } = storeToRefs(gameStore)
+
+// load game state store
+const gameStateStore = useGameStateStore()
+const { playerNamesPhase } = gameStateStore
 </script>
 
 <template>
@@ -29,11 +35,7 @@ const { normalPlayerCount, impostorPlayerCount } = storeToRefs(gameStore)
           />
         </div>
       </div>
-      <button
-        class="w-full bg-box shadow-gshadow/25 shadow-[0_0_2px_2px] rounded-xl p-2 font-kavoon text-xl"
-      >
-        Commencer
-      </button>
+      <Button text="Commencer" @click="playerNamesPhase()" />
     </div>
   </section>
 </template>
