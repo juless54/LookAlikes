@@ -35,24 +35,6 @@ export const useGameStore = defineStore('game', () => {
   }
 
   /**
-   * Change normal players count
-   *
-   * @param {Number} newCount : the new normal players count
-   */
-  function setNormalPlayers(newCount) {
-    normalPlayerCount.value = newCount
-  }
-
-  /**
-   * Change impostor players count
-   *
-   * @param {Number} newCount : the new impostor players count
-   */
-  function setImpostorPlayers(newCount) {
-    impostorPlayerCount.value = newCount
-  }
-
-  /**
    * Attribute roles to participating players
    */
   function shuffleRoles() {
@@ -89,5 +71,5 @@ export const useGameStore = defineStore('game', () => {
     })
   }
 
-  return { players, addPlayer, removePlayer, setNormalPlayers, setImpostorPlayers, shuffleRoles }
+  return { players, addPlayer, removePlayer, normalPlayerCount, impostorPlayerCount, shuffleRoles }
 })
