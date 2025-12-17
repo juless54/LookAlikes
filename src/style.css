@@ -1,1 +1,23 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-twhite: #f6eeee;
+  --color-tplaceholder: #dbd0d0;
+  --color-bg: #132720;
+  --color-box: #1f4537;
+  --color-ubox: #2d6751;
+  --color-gshadow: #f5faed;
+
+  --font-kavoon: 'Kavoon', sans-serif;
+  --font-lao: 'Lao', sans-serif;
+}
+
+@font-face {
+  font-family: 'Kavoon';
+  src: url('./assets/fonts/Kavoon/Kavoon-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Lao';
+  src: url('./assets/fonts/lao-muang-don/LaoMuangDon-Regular.ttf') format('truetype');
+}
