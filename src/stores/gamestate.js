@@ -36,5 +36,5 @@ export const useGameStateStore = defineStore('gamestate', () => {
     gameState.value = 'PlayerCount'
   }
 
-  return { players, playerNamesPhase, gameStartPhase, gameEndPhase, resetGame }
+  return { gameState, playerNamesPhase, gameStartPhase, gameEndPhase, resetGame }
 })
