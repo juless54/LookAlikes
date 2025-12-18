@@ -3,6 +3,7 @@ import { useGameStore } from '@/stores/game'
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import Button from '@/components/Button.vue'
+import GameImageOrWord from '@/components/GameImageOrWord.vue'
 
 // load game data store
 const gameStore = useGameStore()
@@ -31,6 +32,7 @@ function nextPlayer() {
         </h1>
         <h2 class="text-xl">Prenez le temps de bien regarder</h2>
       </div>
+      <GameImageOrWord />
       <Button text="Joueur suivant" @click="nextPlayer()" />
     </div>
   </section>
