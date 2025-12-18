@@ -41,14 +41,14 @@ export const useGameStore = defineStore('game', () => {
    */
   function shuffleRoles() {
     // copy player list to not alter the original
-    const playersCopy = players.value
+    const playersCopy = [...players.value]
     // chance of a mister white being in the game (10%)
     const hasMisterWhite = Math.floor() < 0.1
     // know if mister white has been chosen or not
     const misterWhiteChosen = false
 
     // attribute impostor roles
-    for (i = 0; i <= impostorPlayerCount.length; i++) {
+    for (let i = 0; i < impostorPlayerCount.value; i++) {
       // choose random player
       const index = Math.floor(Math.random() * playersCopy.length)
 
@@ -81,5 +81,6 @@ export const useGameStore = defineStore('game', () => {
     impostorPlayerCount,
     shuffleRoles,
     totalPlayersCount,
+    playersWithRoles,
   }
 })
