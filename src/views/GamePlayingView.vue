@@ -4,24 +4,9 @@ import { useGameStateStore } from '@/stores/gamestate'
 import { storeToRefs } from 'pinia'
 import { onBeforeMount, onMounted, watch } from 'vue'
 
-// load game state store
-const gameStateStore = useGameStateStore()
-const { gameState } = storeToRefs(gameStateStore)
-
 // load game data store
 const gameStore = useGameStore()
 const { playersWithRoles } = storeToRefs(gameStore)
-const { shuffleRoles } = gameStore
-
-// wait for the game to be ready before player shuffle
-watch(
-  () => gameState.value,
-  (state) => {
-    if (state === 'GameStart') {
-      shuffleRoles()
-    }
-  },
-)
 </script>
 
 <template>

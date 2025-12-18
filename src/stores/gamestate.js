@@ -1,5 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { useGameStore } from '@/stores/game'
+import { watch } from 'vue'
 
 /**
  * Store game state data
@@ -7,6 +9,19 @@ import { defineStore } from 'pinia'
 export const useGameStateStore = defineStore('gamestate', () => {
   // game state throughout the game
   const gameState = ref('PlayerCount')
+
+  // import game data store
+  const gameStore = useGameStore()
+
+  // wait for the game to be ready before player shuffle
+  watch(
+    () => gameState.value,
+    (state) => {
+      if (state === 'GameStart') {
+        gameStore.shuffleRoles()
+      }
+    },
+  )
 
   /**
    * Swap to player names selection phase
