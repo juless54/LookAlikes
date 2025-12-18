@@ -71,6 +71,11 @@ export const useGameStore = defineStore('game', () => {
       // set player as a normal player
       playersWithRoles.value.push({ playerName: player, playerRole: 'Innocent' })
     })
+
+    // sort by the order of players array
+    playersWithRoles.value.sort(
+      (a, b) => players.value.indexOf(a.playerName) - players.value.indexOf(b.playerName),
+    )
   }
 
   return {
