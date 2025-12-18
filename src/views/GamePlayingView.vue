@@ -24,8 +24,14 @@ function nextPlayer() {
 
 <template>
   <section class="flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center">
-    <h1 v-if="currentPlayer" class="text-3xl font-kavoon">Joueur {{ currentPlayer.playerName }}</h1>
-    <h2>Prenez le temps de bien regarder</h2>
-    <Button text="Joueur suivant" @click="nextPlayer()" />
+    <div class="flex flex-col items-center justify-between h-[60vh] w-[80vw]">
+      <div class="flex flex-col items-center space-y-4">
+        <h1 v-if="currentPlayer" class="text-3xl font-kavoon">
+          Joueur {{ currentPlayer.playerName }}
+        </h1>
+        <h2 class="text-xl">Prenez le temps de bien regarder</h2>
+      </div>
+      <Button text="Joueur suivant" @click="nextPlayer()" />
+    </div>
   </section>
 </template>

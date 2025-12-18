@@ -38,7 +38,7 @@ function handleClick() {
 
 <template>
   <section class="flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center">
-    <div class="flex flex-col items-center justify-between h-[60vh]">
+    <div class="flex flex-col items-center justify-between h-[60vh] w-[80vw]">
       <div class="space-y-6 flex flex-col items-center">
         <h1 class="text-3xl font-kavoon">Entrez votre nom</h1>
         <input

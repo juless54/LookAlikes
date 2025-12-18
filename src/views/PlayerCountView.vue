@@ -15,7 +15,7 @@ const { playerNamesPhase } = gameStateStore
 
 <template>
   <section class="flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center">
-    <div class="flex flex-col items-center justify-between h-[60vh]">
+    <div class="flex flex-col items-center justify-between h-[60vh] w-[80vw]">
       <h1 class="text-3xl font-kavoon">Nombre de Joueurs</h1>
       <div class="flex flex-col items-center w-full space-y-12 text-xl">
         <div class="flex flex-row items-center justify-between w-full">
