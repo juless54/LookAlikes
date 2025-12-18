@@ -9,6 +9,14 @@ import GameImageOrWord from '@/components/GameImageOrWord.vue'
 const gameStore = useGameStore()
 const { playersWithRoles } = storeToRefs(gameStore)
 
+// if the content must be hidden
+const hideContent = ref(true)
+
+// display content
+function showContent() {
+  hideContent.value = false
+}
+
 // current player index in roles array
 const currentPlayerIndex = ref(0)
 
@@ -20,6 +28,7 @@ function nextPlayer() {
   if (currentPlayerIndex.value === playersWithRoles.value.length - 1) return
 
   currentPlayerIndex.value++
+  hideContent.value = true
 }
 </script>
 
@@ -32,7 +41,7 @@ function nextPlayer() {
         </h1>
         <h2 class="text-xl">Prenez le temps de bien regarder</h2>
       </div>
-      <GameImageOrWord />
+      <GameImageOrWord :hideContent="hideContent" :showContent="showContent" />
       <Button text="Joueur suivant" @click="nextPlayer()" />
     </div>
   </section>
