@@ -13,6 +13,8 @@ export const useGameStore = defineStore('game', () => {
   const impostorPlayerCount = ref(0)
   // array of players with their associated role
   const playersWithRoles = ref([])
+  // total number of players
+  const totalPlayersCount = computed(() => normalPlayerCount.value + impostorPlayerCount.value)
 
   /**
    * Add a player to the game
@@ -71,5 +73,13 @@ export const useGameStore = defineStore('game', () => {
     })
   }
 
-  return { players, addPlayer, removePlayer, normalPlayerCount, impostorPlayerCount, shuffleRoles }
+  return {
+    players,
+    addPlayer,
+    removePlayer,
+    normalPlayerCount,
+    impostorPlayerCount,
+    shuffleRoles,
+    totalPlayersCount,
+  }
 })
