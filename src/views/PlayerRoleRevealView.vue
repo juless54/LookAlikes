@@ -4,6 +4,11 @@ import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import Button from '@/components/Button.vue'
 import GameImageOrWord from '@/components/GameImageOrWord.vue'
+import { useGameStateStore } from '@/stores/gamestate'
+
+// load game state store
+const gameStateStore = useGameStateStore()
+const { gameVotePhase } = gameStateStore
 
 // load game data store
 const gameStore = useGameStore()
@@ -23,9 +28,15 @@ const currentPlayerIndex = ref(0)
 // current player
 const currentPlayer = computed(() => playersWithRoles.value[currentPlayerIndex.value])
 
+// is current player the last to view his role
+const isLastPlayer = computed(() => currentPlayerIndex.value === playersWithRoles.value.length - 1)
+
 // swap to next player
 function nextPlayer() {
-  if (currentPlayerIndex.value === playersWithRoles.value.length - 1) return
+  if (isLastPlayer.value) {
+    gameVotePhase()
+    return
+  }
 
   currentPlayerIndex.value++
   hideContent.value = true
@@ -42,7 +53,7 @@ function nextPlayer() {
         <h2 class="text-xl">Prenez le temps de bien regarder</h2>
       </div>
       <GameImageOrWord :hideContent="hideContent" :showContent="showContent" />
-      <Button text="Joueur suivant" @click="nextPlayer()" />
+      <Button :text="isLastPlayer ? 'Passer aux votes' : 'Joueur suivant'" @click="nextPlayer()" />
     </div>
   </section>
 </template>

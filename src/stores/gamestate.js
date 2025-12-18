@@ -38,6 +38,13 @@ export const useGameStateStore = defineStore('gamestate', () => {
   }
 
   /**
+   * Swap to game vote phase
+   */
+  function gameVotePhase() {
+    gameState.value = 'GameVote'
+  }
+
+  /**
    * Swap to game end phase
    */
   function gameEndPhase() {
@@ -51,5 +58,5 @@ export const useGameStateStore = defineStore('gamestate', () => {
     gameState.value = 'PlayerCount'
   }
 
-  return { gameState, playerNamesPhase, gameStartPhase, gameEndPhase, resetGame }
+  return { gameState, playerNamesPhase, gameStartPhase, gameEndPhase, resetGame, gameVotePhase }
 })
