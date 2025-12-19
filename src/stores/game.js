@@ -42,6 +42,8 @@ export const useGameStore = defineStore('game', () => {
    * Attribute roles to participating players
    */
   function shuffleRoles() {
+    // reset players
+    playersWithRoles.value = []
     // copy player list to not alter the original
     const playersCopy = [...players.value]
     // chance of a mister white being in the game (10%)
