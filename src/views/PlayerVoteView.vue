@@ -3,10 +3,16 @@ import { useGameStore } from '@/stores/game'
 import { storeToRefs } from 'pinia'
 import Button from '@/components/Button.vue'
 import { computed, ref } from 'vue'
+import { useGameStateStore } from '@/stores/gamestate'
 
 // get game data store
 const gameStore = useGameStore()
 const { playersWithRoles } = storeToRefs(gameStore)
+const { checkGameEnd, removePlayerWithRole } = gameStore
+
+// get game state store
+const gameStateStore = useGameStateStore()
+const { gameEndPhase } = gameStateStore
 
 // current player being voted
 const currentIndex = ref(0)
@@ -23,13 +29,14 @@ function handleVoteChange(index) {
 
 // vote for the person to eliminate
 function handleVote() {
-  console.log('vote pour ', currentPlayer.value.playerName)
   showModal.value = true
 }
 
 // eliminate the player
 function eliminatePlayer() {
-  console.log('elimination du joueur', currentPlayer.value.playerName)
+  removePlayerWithRole(currentPlayer.value)
+  const isEnd = checkGameEnd()
+  if (isEnd) gameEndPhase()
   showModal.value = false
 }
 </script>
