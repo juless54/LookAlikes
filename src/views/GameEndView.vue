@@ -3,6 +3,7 @@ import Button from '@/components/Button.vue'
 import { useGameStore } from '@/stores/game'
 import { useGameStateStore } from '@/stores/gamestate'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 
 // get game data store
 const gameStore = useGameStore()
@@ -10,7 +11,16 @@ const { winnerName } = storeToRefs(gameStore)
 
 // get game state store
 const gameStateStore = useGameStateStore()
-const { gameStartPhase } = gameStateStore
+const { gameStartPhase, resetGame } = gameStateStore
+
+// get vue router
+const router = useRouter()
+
+// go to home page
+function goToHome() {
+  resetGame()
+  router.push('/')
+}
 
 function handleClick() {
   console.log('click')
@@ -27,7 +37,7 @@ function handleClick() {
       <div class="flex flex-col w-full items-center space-y-6">
         <Button text="Rejouer" @click="gameStartPhase()" />
         <Button text="Changer les joueurs" @click="handleClick()" />
-        <Button text="Accueil" @click="handleClick()" />
+        <Button text="Accueil" @click="goToHome()" />
       </div>
     </div>
   </section>
