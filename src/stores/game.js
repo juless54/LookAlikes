@@ -5,6 +5,9 @@ import { defineStore } from 'pinia'
  * Store game data
  */
 export const useGameStore = defineStore('game', () => {
+  // load all game images
+  const gameImages = import.meta.glob('../../public/images/games/*/*', { eager: true })
+
   // array of players participating in the game
   const players = ref([])
   // normal players count
@@ -17,6 +20,10 @@ export const useGameStore = defineStore('game', () => {
   const totalPlayersCount = computed(() => normalPlayerCount.value + impostorPlayerCount.value)
   // game winner group
   const winnerName = ref('')
+  // game folder name for current game
+  const currentFolderName = ref('')
+  // list of already used folders
+  const usedFolderNames = ref([])
 
   /**
    * Add a player to the game
@@ -83,6 +90,35 @@ export const useGameStore = defineStore('game', () => {
   }
 
   /**
+   * Choose a random game folder for images
+   */
+  function chooseFolder() {
+    let goodChoice = false
+    let randomIndex = 0
+
+    // read folder names
+    const folders = Object.keys(gameImages).map((path) => {
+      return path.split('/').at(-2)
+    })
+
+    // remove doubles
+    const uniqueFolders = [...new Set(folders)]
+
+    while (!goodChoice && usedFolderNames.value.length !== uniqueFolders.length) {
+      // choose a random folder name and return it
+      randomIndex = Math.floor(Math.random() * uniqueFolders.length)
+
+      // if the folder has not been used, we go with it
+      if (!usedFolderNames.value.includes(uniqueFolders[randomIndex])) {
+        goodChoice = true
+      }
+    }
+
+    currentFolderName.value = uniqueFolders[randomIndex]
+    usedFolderNames.value.push(uniqueFolders[randomIndex])
+  }
+
+  /**
    * Check is the game is finished
    *
    * @returns true if there is no more impostors or if impostors and innocents are equal number
@@ -128,6 +164,8 @@ export const useGameStore = defineStore('game', () => {
     players.value = []
     impostorPlayerCount.value = 0
     normalPlayerCount.value = 0
+    currentFolderName.value = ''
+    usedFolderNames.value = []
   }
 
   return {
@@ -143,5 +181,7 @@ export const useGameStore = defineStore('game', () => {
     removePlayerWithRole,
     winnerName,
     resetPlayers,
+    chooseFolder,
+    currentFolderName,
   }
 })

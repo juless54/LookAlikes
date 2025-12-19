@@ -19,6 +19,7 @@ export const useGameStateStore = defineStore('gamestate', () => {
     (state) => {
       if (state === 'GameStart') {
         gameStore.shuffleRoles()
+        gameStore.chooseFolder()
       }
     },
   )
