@@ -1,10 +1,16 @@
 <script setup>
 import Button from '@/components/Button.vue'
 import { useGameStore } from '@/stores/game'
+import { useGameStateStore } from '@/stores/gamestate'
 import { storeToRefs } from 'pinia'
 
+// get game data store
 const gameStore = useGameStore()
 const { winnerName } = storeToRefs(gameStore)
+
+// get game state store
+const gameStateStore = useGameStateStore()
+const { gameStartPhase } = gameStateStore
 
 function handleClick() {
   console.log('click')
@@ -16,11 +22,13 @@ function handleClick() {
     class="relative flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center"
   >
     <div class="flex flex-col items-center justify-between h-[60vh] w-[80vw]">
-      <h1 class="text-3xl font-kavoon">La partie est terminée !</h1>
+      <h1 class="text-3xl font-kavoon">La partie est terminée</h1>
       <h2 class="text-2xl font-kavoon">Les {{ winnerName }} ont gagné</h2>
-      <Button text="Rejouer" @click="handleClick()" />
-      <Button text="Changer les joueurs" @click="handleClick()" />
-      <Button text="Accueil" @click="handleClick()" />
+      <div class="flex flex-col w-full items-center space-y-6">
+        <Button text="Rejouer" @click="gameStartPhase()" />
+        <Button text="Changer les joueurs" @click="handleClick()" />
+        <Button text="Accueil" @click="handleClick()" />
+      </div>
     </div>
   </section>
 </template>
