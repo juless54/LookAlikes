@@ -11,6 +11,13 @@ const { normalPlayerCount, impostorPlayerCount } = storeToRefs(gameStore)
 // load game state store
 const gameStateStore = useGameStateStore()
 const { playerNamesPhase } = gameStateStore
+
+// check if there is at least 1 impostor and 2 innocents
+function goToNextPhase() {
+  if (normalPlayerCount.value >= 2 && impostorPlayerCount.value > 0) {
+    playerNamesPhase()
+  }
+}
 </script>
 
 <template>
@@ -35,7 +42,7 @@ const { playerNamesPhase } = gameStateStore
           />
         </div>
       </div>
-      <Button text="Commencer" @click="playerNamesPhase()" />
+      <Button text="Commencer" @click="goToNextPhase()" />
     </div>
   </section>
 </template>
