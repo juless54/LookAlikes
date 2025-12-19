@@ -31,7 +31,7 @@ export const useGameStore = defineStore('game', () => {
    * @param {String} playerName : name of the player to remove
    */
   function removePlayer(playerName) {
-    players.value = players.value.reduce((player) => {
+    players.value = players.value.filter((player) => {
       return player.toLowerCase() !== playerName.toLowerCase()
     })
   }
