@@ -78,6 +78,39 @@ export const useGameStore = defineStore('game', () => {
     )
   }
 
+  /**
+   * Check is the game is finished
+   *
+   * @returns true if there is no more impostors or if impostors and innocents are equal number
+   */
+  function checkGameEnd() {
+    let impostorsCount = 0
+    let innocentsCount = 0
+
+    // count each player role
+    playersWithRoles.value.forEach((player) => {
+      if (player.playerRole === 'Imposteur' || player.playerRole === 'Mister White') {
+        impostorsCount++
+        return
+      }
+
+      innocentsCount++
+    })
+
+    return impostorsCount === innocentsCount || impostorsCount === 0
+  }
+
+  /**
+   * Remove a player from current game
+   *
+   * @param {Player} playerToRemove : the player to eliminate
+   */
+  function removePlayerWithRole(playerToRemove) {
+    playersWithRoles.value = playersWithRoles.value.filter((player) => {
+      return playerToRemove.playerName.toLowerCase() !== player.playerName.toLowerCase()
+    })
+  }
+
   return {
     players,
     addPlayer,
@@ -87,5 +120,7 @@ export const useGameStore = defineStore('game', () => {
     shuffleRoles,
     totalPlayersCount,
     playersWithRoles,
+    checkGameEnd,
+    removePlayerWithRole,
   }
 })
