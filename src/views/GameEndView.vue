@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router'
 // get game data store
 const gameStore = useGameStore()
 const { winnerName } = storeToRefs(gameStore)
+const { resetPlayers } = gameStore
 
 // get game state store
 const gameStateStore = useGameStateStore()
@@ -19,6 +20,7 @@ const router = useRouter()
 // go to home page
 function goToHome() {
   resetGame()
+  resetPlayers()
   router.push('/')
 }
 

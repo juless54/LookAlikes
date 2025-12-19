@@ -121,6 +121,15 @@ export const useGameStore = defineStore('game', () => {
     })
   }
 
+  /**
+   * Reset the players array
+   */
+  function resetPlayers() {
+    players.value = []
+    impostorPlayerCount.value = 0
+    normalPlayerCount.value = 0
+  }
+
   return {
     players,
     addPlayer,
@@ -133,5 +142,6 @@ export const useGameStore = defineStore('game', () => {
     checkGameEnd,
     removePlayerWithRole,
     winnerName,
+    resetPlayers,
   }
 })
