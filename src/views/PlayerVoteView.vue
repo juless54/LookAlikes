@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import Button from '@/components/Button.vue'
 import { computed, ref } from 'vue'
 import { useGameStateStore } from '@/stores/gamestate'
+import Modal from '@/components/Modal.vue'
 
 // get game data store
 const gameStore = useGameStore()
@@ -49,20 +50,12 @@ function eliminatePlayer() {
   <section
     class="relative flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center"
   >
-    <div
-      id="modal"
-      v-show="showModal"
-      class="absolute top-0 left-0 w-full h-screen bg-bg/70 backdrop-blur-sm flex flex-col items-center justify-center"
-    >
-      <div
-        class="w-[80vw] bg-ubox p-4 rounded-md shadow-gshadow/25 shadow-[0_0_2px_2px] flex flex-col items-center space-y-6"
-      >
-        <h2 v-if="currentPlayer" class="text-2xl text-center">
-          Vous allez éliminer {{ currentPlayer.playerName }}
-        </h2>
-        <Button text="Confirmer" @click="eliminatePlayer()" />
-      </div>
-    </div>
+    <Modal :showModal="showModal">
+      <h2 v-if="currentPlayer" class="text-2xl text-center">
+        Vous allez éliminer {{ currentPlayer.playerName }}
+      </h2>
+      <Button text="Confirmer" @click="eliminatePlayer()" />
+    </Modal>
     <div class="flex flex-col items-center justify-between h-[60vh] w-[80vw]">
       <div class="flex flex-col w-full items-center space-y-4">
         <h1 class="text-3xl font-kavoon">Débatez !</h1>
