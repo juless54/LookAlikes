@@ -93,29 +93,25 @@ export const useGameStore = defineStore('game', () => {
    * Choose a random game folder for images
    */
   function chooseFolder() {
-    let goodChoice = false
-    let randomIndex = 0
+    // read folders names
+    const folders = [...new Set(Object.keys(gameImages).map((path) => path.split('/').at(-2)))]
 
-    // read folder names
-    const folders = Object.keys(gameImages).map((path) => {
-      return path.split('/').at(-2)
-    })
+    // keep only not used folders
+    const availableFolders = folders.filter((f) => !usedFolderNames.value.includes(f))
 
-    // remove doubles
-    const uniqueFolders = [...new Set(folders)]
-
-    while (!goodChoice && usedFolderNames.value.length !== uniqueFolders.length) {
-      // choose a random folder name and return it
-      randomIndex = Math.floor(Math.random() * uniqueFolders.length)
-
-      // if the folder has not been used, we go with it
-      if (!usedFolderNames.value.includes(uniqueFolders[randomIndex])) {
-        goodChoice = true
-      }
+    // when all folders have been used, choose first folder
+    if (!availableFolders.length) {
+      currentFolderName.value = '1'
+      return
     }
 
-    currentFolderName.value = uniqueFolders[randomIndex]
-    usedFolderNames.value.push(uniqueFolders[randomIndex])
+    // choose a random folder
+    const randomIndex = Math.floor(Math.random() * availableFolders.length)
+    const chosenFolder = availableFolders[randomIndex]
+
+    // register choice
+    currentFolderName.value = chosenFolder
+    usedFolderNames.value.push(chosenFolder)
   }
 
   /**
