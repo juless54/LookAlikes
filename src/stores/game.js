@@ -15,6 +15,8 @@ export const useGameStore = defineStore('game', () => {
   const playersWithRoles = ref([])
   // total number of players
   const totalPlayersCount = computed(() => normalPlayerCount.value + impostorPlayerCount.value)
+  // game winner group
+  const winnerName = ref('')
 
   /**
    * Add a player to the game
@@ -97,6 +99,12 @@ export const useGameStore = defineStore('game', () => {
       innocentsCount++
     })
 
+    // impostors win
+    if (impostorsCount === innocentsCount) winnerName.value = 'Imposteurs'
+
+    // innocents win
+    if (impostorsCount === 0) winnerName.value = 'Innocents'
+
     return impostorsCount === innocentsCount || impostorsCount === 0
   }
 
@@ -122,5 +130,6 @@ export const useGameStore = defineStore('game', () => {
     playersWithRoles,
     checkGameEnd,
     removePlayerWithRole,
+    winnerName,
   }
 })
