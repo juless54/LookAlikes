@@ -34,10 +34,14 @@ function handleVote() {
 
 // eliminate the player
 function eliminatePlayer() {
+  // remove player
   removePlayerWithRole(currentPlayer.value)
+  // reset current player for vote and close modal
+  currentIndex.value = 0
+  showModal.value = false
+  // check for game end and change gamestate if needed
   const isEnd = checkGameEnd()
   if (isEnd) gameEndPhase()
-  showModal.value = false
 }
 </script>
 
