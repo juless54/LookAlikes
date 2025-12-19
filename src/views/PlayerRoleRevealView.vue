@@ -1,7 +1,7 @@
 <script setup>
 import { useGameStore } from '@/stores/game'
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import Button from '@/components/Button.vue'
 import GameImageOrWord from '@/components/GameImageOrWord.vue'
 import { useGameStateStore } from '@/stores/gamestate'
@@ -35,6 +35,7 @@ const isLastPlayer = computed(() => currentPlayerIndex.value === playersWithRole
 function nextPlayer() {
   if (isLastPlayer.value) {
     gameVotePhase()
+    currentPlayerIndex.value = 0
     return
   }
 
