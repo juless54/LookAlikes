@@ -17,8 +17,10 @@ const { gameEndPhase } = gameStateStore
 
 // current player being voted
 const currentIndex = ref(0)
-// show the elimination modal
-const showModal = ref(false)
+// show the elimination confirmation modal
+const showEliminationConfirmationModal = ref(false)
+// show the role reveal modal
+const showRoleRevealModal = ref(false)
 
 // current player for vote
 const currentPlayer = computed(() => playersWithRoles.value[currentIndex.value])
@@ -30,7 +32,13 @@ function handleVoteChange(index) {
 
 // vote for the person to eliminate
 function handleVote() {
-  showModal.value = true
+  showEliminationConfirmationModal.value = true
+}
+
+// show the player's role
+function revealPlayerRole() {
+  showEliminationConfirmationModal.value = false
+  showRoleRevealModal.value = true
 }
 
 // eliminate the player
@@ -39,7 +47,7 @@ function eliminatePlayer() {
   removePlayerWithRole(currentPlayer.value)
   // reset current player for vote and close modal
   currentIndex.value = 0
-  showModal.value = false
+  showRoleRevealModal.value = false
   // check for game end and change gamestate if needed
   const isEnd = checkGameEnd()
   if (isEnd) gameEndPhase()
@@ -50,11 +58,17 @@ function eliminatePlayer() {
   <section
     class="relative flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center"
   >
-    <Modal :showModal="showModal">
+    <Modal :showModal="showEliminationConfirmationModal">
       <h2 v-if="currentPlayer" class="text-2xl text-center">
         Vous allez éliminer {{ currentPlayer.playerName }}
       </h2>
-      <Button text="Confirmer" @click="eliminatePlayer()" />
+      <Button text="Confirmer" @click="revealPlayerRole()" />
+    </Modal>
+    <Modal :showModal="showRoleRevealModal">
+      <h2 v-if="currentPlayer" class="text-2xl text-center">
+        {{ currentPlayer.playerName }} était {{ currentPlayer.playerRole }}
+      </h2>
+      <Button text="Reprendre le jeu" @click="eliminatePlayer()" />
     </Modal>
     <div class="flex flex-col items-center justify-between h-[60vh] w-[80vw]">
       <div class="flex flex-col w-full items-center space-y-4">
