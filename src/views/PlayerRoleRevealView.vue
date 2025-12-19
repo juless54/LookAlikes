@@ -12,7 +12,7 @@ const { gameVotePhase } = gameStateStore
 
 // load game data store
 const gameStore = useGameStore()
-const { playersWithRoles, currentFolderName } = storeToRefs(gameStore)
+const { playersWithRoles, currentFolderName, imagesChooserName } = storeToRefs(gameStore)
 
 // if the content must be hidden
 const hideContent = ref(true)
@@ -66,6 +66,7 @@ function nextPlayer() {
         <h2 class="text-xl">Prenez le temps de bien regarder</h2>
       </div>
       <GameImageOrWord :hideContent="hideContent" :showContent="showContent" :imageSrc="imageSrc" />
+      <h2>Image choisie par {{ imagesChooserName }}</h2>
       <Button :text="isLastPlayer ? 'Passer aux votes' : 'Joueur suivant'" @click="nextPlayer()" />
     </div>
   </section>

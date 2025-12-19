@@ -24,6 +24,8 @@ export const useGameStore = defineStore('game', () => {
   const currentFolderName = ref('')
   // list of already used folders
   const usedFolderNames = ref([])
+  // name of the person having chosen the images
+  const imagesChooserName = ref('')
 
   /**
    * Add a player to the game
@@ -102,12 +104,30 @@ export const useGameStore = defineStore('game', () => {
     // when all folders have been used, choose first folder
     if (!availableFolders.length) {
       currentFolderName.value = '1'
+
+      // get and set name of the person having chosen the images
+      const txtFile = Object.keys(gameImages)
+        .filter((path) => path.includes(`/games/${currentFolderName.value}/`))
+        .map((path) => path.split('/').pop())
+        .find((name) => name.endsWith('.txt'))
+
+      const txtName = txtFile.split('.').shift()
+      imagesChooserName.value = txtName
       return
     }
 
     // choose a random folder
     const randomIndex = Math.floor(Math.random() * availableFolders.length)
     const chosenFolder = availableFolders[randomIndex]
+
+    // get and set name of the person having chosen the images
+    const txtFile = Object.keys(gameImages)
+      .filter((path) => path.includes(`/games/${chosenFolder}/`))
+      .map((path) => path.split('/').pop())
+      .find((name) => name.endsWith('.txt'))
+
+    const txtName = txtFile.split('.').shift()
+    imagesChooserName.value = txtName
 
     // register choice
     currentFolderName.value = chosenFolder
@@ -162,6 +182,7 @@ export const useGameStore = defineStore('game', () => {
     normalPlayerCount.value = 0
     currentFolderName.value = ''
     usedFolderNames.value = []
+    imagesChooserName.value = ''
   }
 
   return {
@@ -179,5 +200,6 @@ export const useGameStore = defineStore('game', () => {
     resetPlayers,
     chooseFolder,
     currentFolderName,
+    imagesChooserName,
   }
 })
