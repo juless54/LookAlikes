@@ -12,7 +12,7 @@ const { gameVotePhase } = gameStateStore
 
 // load game data store
 const gameStore = useGameStore()
-const { playersWithRoles } = storeToRefs(gameStore)
+const { playersWithRoles, currentFolderName } = storeToRefs(gameStore)
 
 // if the content must be hidden
 const hideContent = ref(true)
@@ -31,11 +31,23 @@ const currentPlayer = computed(() => playersWithRoles.value[currentPlayerIndex.v
 // is current player the last to view his role
 const isLastPlayer = computed(() => currentPlayerIndex.value === playersWithRoles.value.length - 1)
 
+// image src depending on current game folder and player role
+const imageSrc = computed(() => {
+  if (!currentPlayer.value) return ''
+
+  let role = 'innocent'
+
+  if (currentPlayer.value.playerRole === 'Imposteur') role = 'impostor'
+
+  return '/images/games/' + currentFolderName.value + '/' + role + '.png'
+})
+
 // swap to next player
 function nextPlayer() {
   if (isLastPlayer.value) {
     gameVotePhase()
     currentPlayerIndex.value = 0
+    hideContent.value = true
     return
   }
 
@@ -53,7 +65,7 @@ function nextPlayer() {
         </h1>
         <h2 class="text-xl">Prenez le temps de bien regarder</h2>
       </div>
-      <GameImageOrWord :hideContent="hideContent" :showContent="showContent" />
+      <GameImageOrWord :hideContent="hideContent" :showContent="showContent" :imageSrc="imageSrc" />
       <Button :text="isLastPlayer ? 'Passer aux votes' : 'Joueur suivant'" @click="nextPlayer()" />
     </div>
   </section>
