@@ -10,6 +10,8 @@ const { playersWithRoles } = storeToRefs(gameStore)
 
 // current player being voted
 const currentIndex = ref(0)
+// show the elimination modal
+const showModal = ref(false)
 
 // current player for vote
 const currentPlayer = computed(() => playersWithRoles.value[currentIndex.value])
@@ -22,13 +24,39 @@ function handleVoteChange(index) {
 // vote for the person to eliminate
 function handleVote() {
   console.log('vote pour ', currentPlayer.value.playerName)
+  showModal.value = true
+}
+
+// eliminate the player
+function eliminatePlayer() {
+  console.log('elimination du joueur', currentPlayer.value.playerName)
+  showModal.value = false
 }
 </script>
 
 <template>
-  <section class="flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center">
+  <section
+    class="relative flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center"
+  >
+    <div
+      id="modal"
+      v-show="showModal"
+      class="absolute top-0 left-0 w-full h-screen bg-bg/70 backdrop-blur-sm flex flex-col items-center justify-center"
+    >
+      <div
+        class="w-[80vw] bg-ubox p-4 rounded-md shadow-gshadow/25 shadow-[0_0_2px_2px] flex flex-col items-center space-y-6"
+      >
+        <h2 v-if="currentPlayer" class="text-2xl text-center">
+          Vous allez éliminer {{ currentPlayer.playerName }}
+        </h2>
+        <Button text="Confirmer" @click="eliminatePlayer()" />
+      </div>
+    </div>
     <div class="flex flex-col items-center justify-between h-[60vh] w-[80vw]">
-      <h1 class="text-3xl font-kavoon">Débatez !</h1>
+      <div class="flex flex-col w-full items-center space-y-4">
+        <h1 class="text-3xl font-kavoon">Débatez !</h1>
+        <h2 class="text-xl">Qui éliminer ?</h2>
+      </div>
       <div class="grid grid-cols-2 gap-4 w-full">
         <div
           v-for="(player, index) in playersWithRoles"
