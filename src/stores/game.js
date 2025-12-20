@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { defineStore } from 'pinia'
 
 /**
@@ -14,8 +14,6 @@ export const useGameStore = defineStore('game', () => {
   const normalPlayerCount = ref(0)
   // impostors count
   const impostorPlayerCount = ref(0)
-  // total number of players
-  const totalPlayersCount = computed(() => normalPlayerCount.value + impostorPlayerCount.value)
   // game winner group
   const winnerName = ref('')
   // game folder name for current game
@@ -24,6 +22,10 @@ export const useGameStore = defineStore('game', () => {
   const usedFolderNames = ref([])
   // name of the person having chosen the images
   const imagesChooserName = ref('')
+
+  watch(normalPlayerCount, (newValue) => {
+    impostorPlayerCount.value = Math.floor(newValue / 3)
+  })
 
   /**
    * Add a player to the game
@@ -36,6 +38,7 @@ export const useGameStore = defineStore('game', () => {
       playerRole: '',
       isEliminated: false,
     })
+    normalPlayerCount.value++
   }
 
   /**
@@ -197,7 +200,6 @@ export const useGameStore = defineStore('game', () => {
     normalPlayerCount,
     impostorPlayerCount,
     shuffleRoles,
-    totalPlayersCount,
     checkGameEnd,
     winnerName,
     resetPlayers,

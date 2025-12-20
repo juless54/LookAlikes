@@ -8,7 +8,7 @@ import { watch } from 'vue'
  */
 export const useGameStateStore = defineStore('gamestate', () => {
   // game state throughout the game
-  const gameState = ref('PlayerCount')
+  const gameState = ref('PlayerNames')
 
   // import game data store
   const gameStore = useGameStore()
@@ -23,13 +23,6 @@ export const useGameStateStore = defineStore('gamestate', () => {
       }
     },
   )
-
-  /**
-   * Swap to player names selection phase
-   */
-  function playerNamesPhase() {
-    gameState.value = 'PlayerNames'
-  }
 
   /**
    * Swap to game start phase
@@ -56,8 +49,8 @@ export const useGameStateStore = defineStore('gamestate', () => {
    * Swap back to player count phase
    */
   function resetGame() {
-    gameState.value = 'PlayerCount'
+    gameState.value = 'PlayerNames'
   }
 
-  return { gameState, playerNamesPhase, gameStartPhase, gameEndPhase, resetGame, gameVotePhase }
+  return { gameState, gameStartPhase, gameEndPhase, resetGame, gameVotePhase }
 })
