@@ -12,7 +12,7 @@ const { gameVotePhase } = gameStateStore
 
 // load game data store
 const gameStore = useGameStore()
-const { playersWithRoles, currentFolderName, imagesChooserName } = storeToRefs(gameStore)
+const { players, currentFolderName, imagesChooserName } = storeToRefs(gameStore)
 
 // if the content must be hidden
 const hideContent = ref(true)
@@ -26,10 +26,10 @@ function showContent() {
 const currentPlayerIndex = ref(0)
 
 // current player
-const currentPlayer = computed(() => playersWithRoles.value[currentPlayerIndex.value])
+const currentPlayer = computed(() => players.value[currentPlayerIndex.value])
 
 // is current player the last to view his role
-const isLastPlayer = computed(() => currentPlayerIndex.value === playersWithRoles.value.length - 1)
+const isLastPlayer = computed(() => currentPlayerIndex.value === players.value.length - 1)
 
 // image src depending on current game folder and player role
 const imageSrc = computed(() => {

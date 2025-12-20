@@ -8,8 +8,8 @@ import Modal from '@/components/Modal.vue'
 
 // get game data store
 const gameStore = useGameStore()
-const { playersWithRoles } = storeToRefs(gameStore)
-const { checkGameEnd, removePlayerWithRole } = gameStore
+const { players } = storeToRefs(gameStore)
+const { checkGameEnd, eliminatePlayerFromGame } = gameStore
 
 // get game state store
 const gameStateStore = useGameStateStore()
@@ -23,7 +23,7 @@ const showEliminationConfirmationModal = ref(false)
 const showRoleRevealModal = ref(false)
 
 // current player for vote
-const currentPlayer = computed(() => playersWithRoles.value[currentIndex.value])
+const currentPlayer = computed(() => players.value[currentIndex.value])
 
 // change person to vote
 function handleVoteChange(index) {
@@ -44,7 +44,7 @@ function revealPlayerRole() {
 // eliminate the player
 function eliminatePlayer() {
   // remove player
-  removePlayerWithRole(currentPlayer.value)
+  eliminatePlayerFromGame(currentIndex.value)
   // reset current player for vote and close modal
   currentIndex.value = 0
   showRoleRevealModal.value = false
@@ -77,10 +77,11 @@ function eliminatePlayer() {
       </div>
       <div class="grid grid-cols-2 gap-4 w-full">
         <div
-          v-for="(player, index) in playersWithRoles"
+          v-for="(player, index) in players"
           class="bg-box text-center rounded-md w-full p-1"
           :class="index === currentIndex ? 'border-4 border-ubox' : 'border-4 border-box'"
           @click="handleVoteChange(index)"
+          v-show="!player.isEliminated"
         >
           {{ player.playerName }}
         </div>

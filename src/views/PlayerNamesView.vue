@@ -50,7 +50,7 @@ function handleClick() {
       </div>
       <div class="grid grid-cols-2 gap-4 w-full">
         <div v-for="player in players" class="bg-box text-center rounded-md w-full p-1">
-          {{ player }}
+          {{ player.playerName }}
         </div>
       </div>
       <Button

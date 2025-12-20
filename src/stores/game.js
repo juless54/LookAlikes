@@ -14,8 +14,6 @@ export const useGameStore = defineStore('game', () => {
   const normalPlayerCount = ref(0)
   // impostors count
   const impostorPlayerCount = ref(0)
-  // array of players with their associated role
-  const playersWithRoles = ref([])
   // total number of players
   const totalPlayersCount = computed(() => normalPlayerCount.value + impostorPlayerCount.value)
   // game winner group
@@ -33,7 +31,11 @@ export const useGameStore = defineStore('game', () => {
    * @param {String} playerName : name of player to add
    */
   function addPlayer(playerName) {
-    players.value.push(playerName)
+    players.value.push({
+      playerName: playerName,
+      playerRole: '',
+      isEliminated: false,
+    })
   }
 
   /**
@@ -43,8 +45,17 @@ export const useGameStore = defineStore('game', () => {
    */
   function removePlayer(playerName) {
     players.value = players.value.filter((player) => {
-      return player.toLowerCase() !== playerName.toLowerCase()
+      return player.playerName.toLowerCase() !== playerName.toLowerCase()
     })
+  }
+
+  /**
+   * Mark player as eliminated
+   *
+   * @param {Number} playerIndex : the index of the player in players array
+   */
+  function eliminatePlayerFromGame(playerIndex) {
+    players.value[playerIndex].isEliminated = true
   }
 
   /**
@@ -52,43 +63,46 @@ export const useGameStore = defineStore('game', () => {
    */
   function shuffleRoles() {
     // reset players
-    playersWithRoles.value = []
-    // copy player list to not alter the original
-    const playersCopy = [...players.value]
+    players.value.forEach((player) => {
+      player.playerRole = ''
+      player.isEliminated = false
+    })
+
     // chance of a mister white being in the game (10%)
     const hasMisterWhite = Math.floor() < 0.1
     // know if mister white has been chosen or not
     const misterWhiteChosen = false
+    // track previous indexes for impostors
+    const previousIndexes = [999]
 
     // attribute impostor roles
     for (let i = 0; i < impostorPlayerCount.value; i++) {
-      // choose random player
-      const index = Math.floor(Math.random() * playersCopy.length)
+      let index = 999
+
+      // pull a random index if it is already attributed
+      while (previousIndexes.includes(index)) {
+        // choose random player
+        index = Math.floor(Math.random() * players.value.length)
+      }
 
       if (hasMisterWhite && !misterWhiteChosen) {
         // set player as an mister white
-        playersWithRoles.value.push({ playerName: playersCopy[index], playerRole: 'Mister White' })
+        players.value[index].playerRole = 'Mister White'
         // tell mister white has been chosen
         misterWhiteChosen = true
       } else {
         // set player as an impostor
-        playersWithRoles.value.push({ playerName: playersCopy[index], playerRole: 'Imposteur' })
+        players.value[index].playerRole = 'Imposteur'
       }
-
-      // remove player from the list to prevent duplication
-      playersCopy.splice(index, 1)
     }
 
     // set the remaining players to normal players
-    playersCopy.forEach((player) => {
+    players.value.forEach((player) => {
       // set player as a normal player
-      playersWithRoles.value.push({ playerName: player, playerRole: 'Innocent' })
+      if (player.playerRole === '') {
+        player.playerRole = 'Innocent'
+      }
     })
-
-    // sort by the order of players array
-    playersWithRoles.value.sort(
-      (a, b) => players.value.indexOf(a.playerName) - players.value.indexOf(b.playerName),
-    )
   }
 
   /**
@@ -144,7 +158,9 @@ export const useGameStore = defineStore('game', () => {
     let innocentsCount = 0
 
     // count each player role
-    playersWithRoles.value.forEach((player) => {
+    players.value.forEach((player) => {
+      if (player.isEliminated) return
+
       if (player.playerRole === 'Imposteur' || player.playerRole === 'Mister White') {
         impostorsCount++
         return
@@ -160,17 +176,6 @@ export const useGameStore = defineStore('game', () => {
     if (impostorsCount === 0) winnerName.value = 'Innocents'
 
     return impostorsCount === innocentsCount || impostorsCount === 0
-  }
-
-  /**
-   * Remove a player from current game
-   *
-   * @param {Player} playerToRemove : the player to eliminate
-   */
-  function removePlayerWithRole(playerToRemove) {
-    playersWithRoles.value = playersWithRoles.value.filter((player) => {
-      return playerToRemove.playerName.toLowerCase() !== player.playerName.toLowerCase()
-    })
   }
 
   /**
@@ -193,13 +198,12 @@ export const useGameStore = defineStore('game', () => {
     impostorPlayerCount,
     shuffleRoles,
     totalPlayersCount,
-    playersWithRoles,
     checkGameEnd,
-    removePlayerWithRole,
     winnerName,
     resetPlayers,
     chooseFolder,
     currentFolderName,
     imagesChooserName,
+    eliminatePlayerFromGame,
   }
 })
