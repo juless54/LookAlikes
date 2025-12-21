@@ -50,6 +50,7 @@ export const useGameStore = defineStore('game', () => {
     players.value = players.value.filter((player) => {
       return player.playerName.toLowerCase() !== playerName.toLowerCase()
     })
+    normalPlayerCount.value--
   }
 
   /**

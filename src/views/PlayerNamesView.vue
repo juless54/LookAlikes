@@ -4,11 +4,12 @@ import { useGameStore } from '@/stores/game'
 import { useGameStateStore } from '@/stores/gamestate'
 import { storeToRefs } from 'pinia'
 import Button from '@/components/Button.vue'
+import Modal from '@/components/Modal.vue'
 
 // load game store
 const gameStore = useGameStore()
 const { players, impostorPlayerCount } = storeToRefs(gameStore)
-const { addPlayer } = gameStore
+const { addPlayer, removePlayer } = gameStore
 
 // load game state store
 const gameStateStore = useGameStateStore()
@@ -16,6 +17,12 @@ const { gameStartPhase } = gameStateStore
 
 // ref for the name input
 const nameInput = ref('')
+// current player index
+const currentIndex = ref(0)
+// current player
+const currentPlayer = computed(() => players.value[currentIndex.value])
+// show or hide player removal modal
+const showRemovalModal = ref(false)
 
 // register player
 function registerPlayer() {
@@ -28,11 +35,32 @@ function registerPlayer() {
 function startGame() {
   gameStartPhase()
 }
+
+// click on a player name to remove him
+function handlePlayerNameClick(index) {
+  currentIndex.value = index
+  showRemovalModal.value = true
+}
+
+// remove player from list
+function removePlayerFromGame() {
+  removePlayer(currentPlayer.value.playerName)
+  showRemovalModal.value = false
+  currentIndex.value = 0
+}
 </script>
 
 <template>
-  <section class="flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center">
-    <div class="flex flex-col items-center justify-between h-[70vh] w-[80vw]">
+  <section
+    class="relative flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center"
+  >
+    <Modal :showModal="showRemovalModal">
+      <h2 v-if="currentPlayer" class="text-2xl text-center">
+        Vous allez retirer {{ currentPlayer.playerName }}
+      </h2>
+      <Button text="Confirmer" @click="removePlayerFromGame()" />
+    </Modal>
+    <div class="flex flex-col items-center justify-between h-[80vh] w-[80vw]">
       <div class="space-y-6 flex flex-col items-center">
         <h1 class="text-3xl font-kavoon">Entrez votre nom</h1>
         <input
@@ -51,10 +79,15 @@ function startGame() {
         </div>
       </div>
       <div class="grid grid-cols-2 gap-4 w-full">
-        <div v-for="player in players" class="bg-box text-center rounded-md w-full p-2">
+        <div
+          v-for="(player, index) in players"
+          class="bg-box text-center rounded-md w-full p-1 border-4 border-box"
+          @click="handlePlayerNameClick(index)"
+        >
           {{ player.playerName }}
         </div>
       </div>
+      <h2>Cliquez sur un nom pour le retirer</h2>
       <div class="flex flex-col items-center space-y-4 w-full">
         <Button text="Ajouter le joueur" @click="registerPlayer()" />
         <Button text="Commencer la partie" @click="startGame()" />
