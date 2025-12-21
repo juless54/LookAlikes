@@ -31,7 +31,7 @@ function goToHome() {
 }
 
 function handleClick() {
-  console.log('click')
+  resetGame()
 }
 </script>
 
