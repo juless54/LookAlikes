@@ -1,6 +1,19 @@
 <script setup>
+import { useGameStateStore } from '@/stores/gamestate'
+import { useGameStore } from '@/stores/game'
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+
+// get game data store
+const gameStore = useGameStore()
+const { resetPlayers } = gameStore
+
+// get game state store
+const gameStateStore = useGameStateStore()
+const { resetGame } = gameStateStore
+
+// get vue router
+const router = useRouter()
 
 // show or hide menu
 const showMenu = ref(false)
@@ -11,6 +24,13 @@ const menuBar = [0, 1, 2]
 // show or hide menu
 function toggleMenu() {
   showMenu.value = !showMenu.value
+}
+
+// go to home page
+function goToHome() {
+  resetGame()
+  resetPlayers()
+  router.push('/')
 }
 </script>
 
@@ -27,7 +47,7 @@ function toggleMenu() {
         :class="showMenu ? 'translate-x-0' : 'translate-x-[50vw]'"
         class="absolute top-10 right-0 bg-box w-[30vw] p-2 rounded-md text-center transition-all duration-300 ease-in-out"
       >
-        <RouterLink to="/">Accueil</RouterLink>
+        <button @click="goToHome()">Accueil</button>
       </div>
     </div>
   </nav>
