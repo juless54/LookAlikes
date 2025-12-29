@@ -3,51 +3,47 @@
   import { ref, computed } from 'vue'
 
   import Button from '@/components/Button.vue'
-  import Modal from '@/components/Modal.vue'
   import { useGameStore } from '@/stores/game'
   import { useGameStateStore } from '@/stores/gamestate'
 
-  // load game store
   const gameStore = useGameStore()
   const { impostorPlayerCount, players } = storeToRefs(gameStore)
   const { addPlayer, removePlayer } = gameStore
 
-  // load game state store
   const gameStateStore = useGameStateStore()
   const { gameStartPhase } = gameStateStore
 
-  // ref for the name input
   const nameInput = ref('')
-  // current player index
   const currentIndex = ref(0)
-  // current player
-  const currentPlayer = computed(() => players.value[currentIndex.value])
-  // show or hide player removal modal
-  const showRemovalModal = ref(false)
 
-  // register player
+  // 1. Vérification des doublons
+  const isDuplicate = computed(() => {
+    return players.value.some(
+      p => p.playerName.toLowerCase() === nameInput.value.trim().toLowerCase()
+    )
+  })
+
   function registerPlayer() {
-    if (nameInput.value === '') return
+    if (nameInput.value === '' || isDuplicate.value) return
     addPlayer(nameInput.value)
     nameInput.value = ''
   }
 
-  // start the game
+  function removeAllPlayers() {
+    players.value.slice().forEach(player => {
+      removePlayer(player.playerName)
+    })
+  }
+
   function startGame() {
-    gameStartPhase()
+    if (players.value.length >= 3) {
+      gameStartPhase()
+    }
   }
 
-  // click on a player name to remove him
-  function handlePlayerNameClick(index) {
-    currentIndex.value = index
-    showRemovalModal.value = true
-  }
-
-  // remove player from list
-  function removePlayerFromGame() {
-    removePlayer(currentPlayer.value.playerName)
-    showRemovalModal.value = false
-    currentIndex.value = 0
+  // 2. Suppression directe sans modal
+  function handlePlayerNameClick(player) {
+    removePlayer(player.playerName)
   }
 </script>
 
@@ -55,22 +51,24 @@
   <section
     class="relative flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center"
   >
-    <Modal :show-modal="showRemovalModal">
-      <h2 v-if="currentPlayer" class="text-2xl text-center">
-        Vous allez retirer {{ currentPlayer.playerName }}
-      </h2>
-      <Button text="Confirmer" @click="removePlayerFromGame()" />
-    </Modal>
     <div class="flex flex-col items-center justify-between h-[80vh] w-[80vw]">
-      <div class="space-y-6 flex flex-col items-center">
+      <div class="space-y-6 flex flex-col items-center w-full">
         <h1 class="text-3xl font-kavoon">Entrez votre nom</h1>
-        <input
-          v-model="nameInput"
-          type="text"
-          placeholder="Nom"
-          class="w-full p-2 bg-ubox rounded-md outline-none placeholder:text-tplaceholder"
-          @keyup.enter="registerPlayer()"
-        />
+
+        <div class="w-full relative">
+          <input
+            v-model="nameInput"
+            type="text"
+            placeholder="Nom"
+            class="w-full p-2 bg-ubox rounded-md outline-none placeholder:text-tplaceholder"
+            :class="{ 'border-2 border-red-500': isDuplicate }"
+            @keyup.enter="registerPlayer()"
+          />
+          <p v-if="isDuplicate" class="text-red-500 text-[10px] absolute mt-1">
+            Ce nom existe déjà
+          </p>
+        </div>
+
         <div class="flex flex-row items-center justify-between w-full text-xl">
           <h2>Imposteurs</h2>
           <input
@@ -80,20 +78,41 @@
           />
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-4 w-full">
-        <div
-          v-for="(player, index) in players"
-          :key="index"
-          class="bg-box text-center rounded-md w-full p-1 border-4 border-box"
-          @click="handlePlayerNameClick(index)"
-        >
-          {{ player.playerName }}
+
+      <div class="w-full space-y-2">
+        <div class="flex justify-between text-xs text-tplaceholder font-bold px-1">
+          <span>CLIQUEZ SUR UN NOM POUR LE RETIRER /</span>
+          <span>JOUEURS : {{ players.length }}</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 w-full max-h-[30vh] overflow-y-auto p-1">
+          <div
+            v-for="(player, index) in players"
+            :key="index"
+            class="bg-box text-center rounded-md w-full p-1 border-4 border-box hover:border-red-500/50 cursor-pointer transition-colors relative group"
+            @click="handlePlayerNameClick(player)"
+          >
+            {{ player.playerName }}
+            <span
+              class="absolute right-1 top-0 text-xs text-red-500 opacity-0 group-hover:opacity-100"
+              >✕</span
+            >
+          </div>
         </div>
       </div>
-      <h2>Cliquez sur un nom pour le retirer</h2>
+
       <div class="flex flex-col items-center space-y-4 w-full">
-        <Button text="Ajouter le joueur" @click="registerPlayer()" />
-        <Button text="Commencer la partie" @click="startGame()" />
+        <Button
+          text="Ajouter le joueur"
+          :class="{ 'opacity-50': isDuplicate || !nameInput }"
+          @click="registerPlayer()"
+        />
+        <Button text="Retirer tous les joueurs" @click="removeAllPlayers()" />
+        <Button
+          text="Commencer la partie"
+          :class="{ 'opacity-50': players.length < 3 }"
+          @click="startGame()"
+        />
       </div>
     </div>
   </section>
