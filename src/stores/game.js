@@ -78,29 +78,27 @@ export const useGameStore = defineStore('game', () => {
     const previousIndexes = [999]
 
     // get the name of the person who chose the images
-    const chooserName = imagesChooserName?.value?.toLowerCase() || ''
-
-    // filter indexes to exclude the chooser
-    const availableIndexes = players.value
-      .map((p, i) => ({ i, name: p.playerName.toLowerCase() }))
-      .filter(p => p.name !== chooserName)
-      .map(p => p.i)
+    const chooserName = imagesChooserName.value?.toLowerCase() || ''
 
     // attribute impostor roles
-    for (let i = 0; i < impostorPlayerCount.value; i++) {
+    let nmb_impostors = 0
+    while (nmb_impostors < impostorPlayerCount.value) {
       let index = 999
 
       // pull a random index if it is already attributed
       while (previousIndexes.includes(index)) {
-        const randomIdx = Math.floor(Math.random() * availableIndexes.length)
-        index = availableIndexes[randomIdx]
+        index = Math.floor(Math.random() * players.value.length)
       }
 
-      if (hasMisterWhite && !misterWhiteChosen) {
-        players.value[index].playerRole = 'Mister White'
-        misterWhiteChosen = true
-      } else {
-        players.value[index].playerRole = 'Imposteur'
+      if (players.value[index].playerName.toLowerCase() !== chooserName) {
+        if (hasMisterWhite && !misterWhiteChosen) {
+          players.value[index].playerRole = 'Mister White'
+          misterWhiteChosen = true
+          nmb_impostors++
+        } else {
+          players.value[index].playerRole = 'Imposteur'
+          nmb_impostors++
+        }
       }
 
       previousIndexes.push(index)

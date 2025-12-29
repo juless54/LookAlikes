@@ -41,7 +41,6 @@
     if (currentPlayer.value.playerRole === 'Imposteur') {
       role = 'impostor'
     }
-    console.log(currentPlayer.value.playerRole)
 
     if (currentPlayer.value.playerRole !== 'Mister White') {
       return '/images/games/' + currentFolderName.value + '/' + role + '.png'
