@@ -1,14 +1,15 @@
 <script setup>
-import PlayerNamesView from '@/views/PlayerNamesView.vue'
-import PlayerRoleRevealView from '@/views/PlayerRoleRevealView.vue'
-import PlayerVoteView from '@/views/PlayerVoteView.vue'
-import GameEndView from '@/views/GameEndView.vue'
-import Navbar from '@/components/Navbar.vue'
-import { useGameStateStore } from '@/stores/gamestate'
-import { storeToRefs } from 'pinia'
+  import { storeToRefs } from 'pinia'
 
-const gameStateStore = useGameStateStore()
-const { gameState } = storeToRefs(gameStateStore)
+  import Navbar from '@/components/Navbar.vue'
+  import { useGameStateStore } from '@/stores/gamestate'
+  import GameEndView from '@/views/GameEndView.vue'
+  import PlayerNamesView from '@/views/PlayerNamesView.vue'
+  import PlayerRoleRevealView from '@/views/PlayerRoleRevealView.vue'
+  import PlayerVoteView from '@/views/PlayerVoteView.vue'
+
+  const gameStateStore = useGameStateStore()
+  const { gameState } = storeToRefs(gameStateStore)
 </script>
 
 <template>

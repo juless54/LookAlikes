@@ -1,70 +1,71 @@
 <script setup>
-import { useGameStore } from '@/stores/game'
-import { storeToRefs } from 'pinia'
-import Button from '@/components/Button.vue'
-import { computed, ref } from 'vue'
-import { useGameStateStore } from '@/stores/gamestate'
-import Modal from '@/components/Modal.vue'
+  import { storeToRefs } from 'pinia'
+  import { computed, ref } from 'vue'
 
-// get game data store
-const gameStore = useGameStore()
-const { players } = storeToRefs(gameStore)
-const { checkGameEnd, eliminatePlayerFromGame } = gameStore
+  import Button from '@/components/Button.vue'
+  import Modal from '@/components/Modal.vue'
+  import { useGameStore } from '@/stores/game'
+  import { useGameStateStore } from '@/stores/gamestate'
 
-// get game state store
-const gameStateStore = useGameStateStore()
-const { gameEndPhase } = gameStateStore
+  // get game data store
+  const gameStore = useGameStore()
+  const { players } = storeToRefs(gameStore)
+  const { checkGameEnd, eliminatePlayerFromGame } = gameStore
 
-// current player being voted
-const currentIndex = ref(0)
-// show the elimination confirmation modal
-const showEliminationConfirmationModal = ref(false)
-// show the role reveal modal
-const showRoleRevealModal = ref(false)
+  // get game state store
+  const gameStateStore = useGameStateStore()
+  const { gameEndPhase } = gameStateStore
 
-// current player for vote
-const currentPlayer = computed(() => players.value[currentIndex.value])
+  // current player being voted
+  const currentIndex = ref(0)
+  // show the elimination confirmation modal
+  const showEliminationConfirmationModal = ref(false)
+  // show the role reveal modal
+  const showRoleRevealModal = ref(false)
 
-// change person to vote
-function handleVoteChange(index) {
-  currentIndex.value = index
-}
+  // current player for vote
+  const currentPlayer = computed(() => players.value[currentIndex.value])
 
-// vote for the person to eliminate
-function handleVote() {
-  showEliminationConfirmationModal.value = true
-}
+  // change person to vote
+  function handleVoteChange(index) {
+    currentIndex.value = index
+  }
 
-// show the player's role
-function revealPlayerRole() {
-  showEliminationConfirmationModal.value = false
-  showRoleRevealModal.value = true
-}
+  // vote for the person to eliminate
+  function handleVote() {
+    showEliminationConfirmationModal.value = true
+  }
 
-// eliminate the player
-function eliminatePlayer() {
-  // remove player
-  eliminatePlayerFromGame(currentIndex.value)
-  // reset current player for vote and close modal
-  currentIndex.value = 0
-  showRoleRevealModal.value = false
-  // check for game end and change gamestate if needed
-  const isEnd = checkGameEnd()
-  if (isEnd) gameEndPhase()
-}
+  // show the player's role
+  function revealPlayerRole() {
+    showEliminationConfirmationModal.value = false
+    showRoleRevealModal.value = true
+  }
+
+  // eliminate the player
+  function eliminatePlayer() {
+    // remove player
+    eliminatePlayerFromGame(currentIndex.value)
+    // reset current player for vote and close modal
+    currentIndex.value = 0
+    showRoleRevealModal.value = false
+    // check for game end and change gamestate if needed
+    const isEnd = checkGameEnd()
+    if (isEnd) gameEndPhase()
+  }
 </script>
 
 <template>
   <section
     class="relative flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center"
   >
-    <Modal :showModal="showEliminationConfirmationModal">
+    <Modal :show-modal="showEliminationConfirmationModal">
       <h2 v-if="currentPlayer" class="text-2xl text-center">
         Vous allez éliminer {{ currentPlayer.playerName }}
       </h2>
       <Button text="Confirmer" @click="revealPlayerRole()" />
     </Modal>
-    <Modal :showModal="showRoleRevealModal">
+    <Modal :show-modal="showRoleRevealModal">
       <h2 v-if="currentPlayer" class="text-2xl text-center">
         {{ currentPlayer.playerName }} était {{ currentPlayer.playerRole }}
       </h2>
@@ -78,10 +79,11 @@ function eliminatePlayer() {
       <div class="grid grid-cols-2 gap-4 w-full">
         <div
           v-for="(player, index) in players"
+          v-show="!player.isEliminated"
+          :key="index"
           class="bg-box text-center rounded-md w-full p-1"
           :class="index === currentIndex ? 'border-4 border-ubox' : 'border-4 border-box'"
           @click="handleVoteChange(index)"
-          v-show="!player.isEliminated"
         >
           {{ player.playerName }}
         </div>

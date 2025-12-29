@@ -1,5 +1,5 @@
-import { ref, computed, watch } from 'vue'
 import { defineStore } from 'pinia'
+import { ref, watch } from 'vue'
 
 /**
  * Store game data
@@ -23,7 +23,7 @@ export const useGameStore = defineStore('game', () => {
   // name of the person having chosen the images
   const imagesChooserName = ref('')
 
-  watch(normalPlayerCount, (newValue) => {
+  watch(normalPlayerCount, newValue => {
     impostorPlayerCount.value = Math.floor(newValue / 3)
   })
 
@@ -34,9 +34,9 @@ export const useGameStore = defineStore('game', () => {
    */
   function addPlayer(playerName) {
     players.value.push({
+      isEliminated: false,
       playerName: playerName,
       playerRole: '',
-      isEliminated: false,
     })
     normalPlayerCount.value++
   }
@@ -47,7 +47,7 @@ export const useGameStore = defineStore('game', () => {
    * @param {String} playerName : name of the player to remove
    */
   function removePlayer(playerName) {
-    players.value = players.value.filter((player) => {
+    players.value = players.value.filter(player => {
       return player.playerName.toLowerCase() !== playerName.toLowerCase()
     })
     normalPlayerCount.value--
@@ -67,7 +67,7 @@ export const useGameStore = defineStore('game', () => {
    */
   function shuffleRoles() {
     // reset players
-    players.value.forEach((player) => {
+    players.value.forEach(player => {
       player.playerRole = ''
       player.isEliminated = false
     })
@@ -75,7 +75,7 @@ export const useGameStore = defineStore('game', () => {
     // chance of a mister white being in the game (10%)
     const hasMisterWhite = Math.floor() < 0.1
     // know if mister white has been chosen or not
-    const misterWhiteChosen = false
+    let misterWhiteChosen = false
     // track previous indexes for impostors
     const previousIndexes = [999]
 
@@ -101,7 +101,7 @@ export const useGameStore = defineStore('game', () => {
     }
 
     // set the remaining players to normal players
-    players.value.forEach((player) => {
+    players.value.forEach(player => {
       // set player as a normal player
       if (player.playerRole === '') {
         player.playerRole = 'Innocent'
@@ -114,10 +114,10 @@ export const useGameStore = defineStore('game', () => {
    */
   function chooseFolder() {
     // read folders names
-    const folders = [...new Set(Object.keys(gameImages).map((path) => path.split('/').at(-2)))]
+    const folders = [...new Set(Object.keys(gameImages).map(path => path.split('/').at(-2)))]
 
     // keep only not used folders
-    const availableFolders = folders.filter((f) => !usedFolderNames.value.includes(f))
+    const availableFolders = folders.filter(f => !usedFolderNames.value.includes(f))
 
     // when all folders have been used, choose first folder
     if (!availableFolders.length) {
@@ -125,9 +125,9 @@ export const useGameStore = defineStore('game', () => {
 
       // get and set name of the person having chosen the images
       const txtFile = Object.keys(gameImages)
-        .filter((path) => path.includes(`/games/${currentFolderName.value}/`))
-        .map((path) => path.split('/').pop())
-        .find((name) => name.endsWith('.txt'))
+        .filter(path => path.includes(`/games/${currentFolderName.value}/`))
+        .map(path => path.split('/').pop())
+        .find(name => name.endsWith('.txt'))
 
       const txtName = txtFile.split('.').shift()
       imagesChooserName.value = txtName
@@ -140,9 +140,9 @@ export const useGameStore = defineStore('game', () => {
 
     // get and set name of the person having chosen the images
     const txtFile = Object.keys(gameImages)
-      .filter((path) => path.includes(`/games/${chosenFolder}/`))
-      .map((path) => path.split('/').pop())
-      .find((name) => name.endsWith('.txt'))
+      .filter(path => path.includes(`/games/${chosenFolder}/`))
+      .map(path => path.split('/').pop())
+      .find(name => name.endsWith('.txt'))
 
     const txtName = txtFile.split('.').shift()
     imagesChooserName.value = txtName
@@ -162,7 +162,7 @@ export const useGameStore = defineStore('game', () => {
     let innocentsCount = 0
 
     // count each player role
-    players.value.forEach((player) => {
+    players.value.forEach(player => {
       if (player.isEliminated) return
 
       if (player.playerRole === 'Imposteur' || player.playerRole === 'Mister White') {
@@ -195,18 +195,18 @@ export const useGameStore = defineStore('game', () => {
   }
 
   return {
-    players,
     addPlayer,
-    removePlayer,
-    normalPlayerCount,
-    impostorPlayerCount,
-    shuffleRoles,
     checkGameEnd,
-    winnerName,
-    resetPlayers,
     chooseFolder,
     currentFolderName,
-    imagesChooserName,
     eliminatePlayerFromGame,
+    imagesChooserName,
+    impostorPlayerCount,
+    normalPlayerCount,
+    players,
+    removePlayer,
+    resetPlayers,
+    shuffleRoles,
+    winnerName,
   }
 })

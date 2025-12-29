@@ -1,59 +1,60 @@
 <script setup>
-import { useGameStore } from '@/stores/game'
-import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref } from 'vue'
-import Button from '@/components/Button.vue'
-import GameImageOrWord from '@/components/GameImageOrWord.vue'
-import { useGameStateStore } from '@/stores/gamestate'
+  import { storeToRefs } from 'pinia'
+  import { computed, ref } from 'vue'
 
-// load game state store
-const gameStateStore = useGameStateStore()
-const { gameVotePhase } = gameStateStore
+  import Button from '@/components/Button.vue'
+  import GameImageOrWord from '@/components/GameImageOrWord.vue'
+  import { useGameStore } from '@/stores/game'
+  import { useGameStateStore } from '@/stores/gamestate'
 
-// load game data store
-const gameStore = useGameStore()
-const { players, currentFolderName, imagesChooserName } = storeToRefs(gameStore)
+  // load game state store
+  const gameStateStore = useGameStateStore()
+  const { gameVotePhase } = gameStateStore
 
-// if the content must be hidden
-const hideContent = ref(true)
+  // load game data store
+  const gameStore = useGameStore()
+  const { currentFolderName, imagesChooserName, players } = storeToRefs(gameStore)
 
-// display content
-function showContent() {
-  hideContent.value = false
-}
+  // if the content must be hidden
+  const hideContent = ref(true)
 
-// current player index in roles array
-const currentPlayerIndex = ref(0)
-
-// current player
-const currentPlayer = computed(() => players.value[currentPlayerIndex.value])
-
-// is current player the last to view his role
-const isLastPlayer = computed(() => currentPlayerIndex.value === players.value.length - 1)
-
-// image src depending on current game folder and player role
-const imageSrc = computed(() => {
-  if (!currentPlayer.value) return ''
-
-  let role = 'innocent'
-
-  if (currentPlayer.value.playerRole === 'Imposteur') role = 'impostor'
-
-  return '/images/games/' + currentFolderName.value + '/' + role + '.png'
-})
-
-// swap to next player
-function nextPlayer() {
-  if (isLastPlayer.value) {
-    gameVotePhase()
-    currentPlayerIndex.value = 0
-    hideContent.value = true
-    return
+  // display content
+  function showContent() {
+    hideContent.value = false
   }
 
-  currentPlayerIndex.value++
-  hideContent.value = true
-}
+  // current player index in roles array
+  const currentPlayerIndex = ref(0)
+
+  // current player
+  const currentPlayer = computed(() => players.value[currentPlayerIndex.value])
+
+  // is current player the last to view his role
+  const isLastPlayer = computed(() => currentPlayerIndex.value === players.value.length - 1)
+
+  // image src depending on current game folder and player role
+  const imageSrc = computed(() => {
+    if (!currentPlayer.value) return ''
+
+    let role = 'innocent'
+
+    if (currentPlayer.value.playerRole === 'Imposteur') role = 'impostor'
+
+    return '/images/games/' + currentFolderName.value + '/' + role + '.png'
+  })
+
+  // swap to next player
+  function nextPlayer() {
+    if (isLastPlayer.value) {
+      gameVotePhase()
+      currentPlayerIndex.value = 0
+      hideContent.value = true
+      return
+    }
+
+    currentPlayerIndex.value++
+    hideContent.value = true
+  }
 </script>
 
 <template>
@@ -65,7 +66,11 @@ function nextPlayer() {
         </h1>
         <h2 class="text-xl">Prenez le temps de bien regarder</h2>
       </div>
-      <GameImageOrWord :hideContent="hideContent" :showContent="showContent" :imageSrc="imageSrc" />
+      <GameImageOrWord
+        :hide-content="hideContent"
+        :show-content="showContent"
+        :image-src="imageSrc"
+      />
       <h2>Image choisie par {{ imagesChooserName }}</h2>
       <Button :text="isLastPlayer ? 'Passer aux votes' : 'Joueur suivant'" @click="nextPlayer()" />
     </div>

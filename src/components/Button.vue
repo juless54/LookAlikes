@@ -1,9 +1,9 @@
 <script setup>
-const props = defineProps({
-  text: String,
-})
+  defineProps({
+    text: String,
+  })
 
-const emit = defineEmits(['click'])
+  const emit = defineEmits(['click'])
 </script>
 
 <template>

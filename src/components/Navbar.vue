@@ -1,37 +1,38 @@
 <script setup>
-import { useGameStateStore } from '@/stores/gamestate'
-import { useGameStore } from '@/stores/game'
-import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+  import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
 
-// get game data store
-const gameStore = useGameStore()
-const { resetPlayers } = gameStore
+  import { useGameStore } from '@/stores/game'
+  import { useGameStateStore } from '@/stores/gamestate'
 
-// get game state store
-const gameStateStore = useGameStateStore()
-const { resetGame } = gameStateStore
+  // get game data store
+  const gameStore = useGameStore()
+  const { resetPlayers } = gameStore
 
-// get vue router
-const router = useRouter()
+  // get game state store
+  const gameStateStore = useGameStateStore()
+  const { resetGame } = gameStateStore
 
-// show or hide menu
-const showMenu = ref(false)
+  // get vue router
+  const router = useRouter()
 
-// bars for menu icon
-const menuBar = [0, 1, 2]
+  // show or hide menu
+  const showMenu = ref(false)
 
-// show or hide menu
-function toggleMenu() {
-  showMenu.value = !showMenu.value
-}
+  // bars for menu icon
+  const menuBar = [0, 1, 2]
 
-// go to home page
-function goToHome() {
-  resetGame()
-  resetPlayers()
-  router.push('/')
-}
+  // show or hide menu
+  function toggleMenu() {
+    showMenu.value = !showMenu.value
+  }
+
+  // go to home page
+  function goToHome() {
+    resetGame()
+    resetPlayers()
+    router.push('/')
+  }
 </script>
 
 <template>
@@ -39,9 +40,10 @@ function goToHome() {
     <h2 class="font-kavoon text-2xl">LookAlikes</h2>
     <div class="flex flex-col items-center space-y-1 relative">
       <div
-        @click="toggleMenu()"
         v-for="number in menuBar"
+        :key="number"
         class="bg-twhite w-10 h-1.5 rounded-md"
+        @click="toggleMenu()"
       />
       <div
         :class="showMenu ? 'translate-x-0' : 'translate-x-[50vw]'"

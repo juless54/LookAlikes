@@ -1,5 +1,5 @@
 <script setup>
-import GameLink from '@/components/GameLink.vue'
+  import GameLink from '@/components/GameLink.vue'
 </script>
 
 <template>

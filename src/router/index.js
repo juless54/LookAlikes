@@ -1,25 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+
 import ImagesGame from '@/views/ImagesGame.vue'
 import WordsGame from '@/views/WordsGame.vue'
+
+import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
       component: HomeView,
+      name: 'home',
+      path: '/',
     },
     {
-      path: '/imagesGame',
-      name: 'images-game',
       component: ImagesGame,
+      name: 'images-game',
+      path: '/imagesGame',
     },
     {
-      path: '/wordsGame',
-      name: 'words-game',
       component: WordsGame,
+      name: 'words-game',
+      path: '/wordsGame',
     },
   ],
 })

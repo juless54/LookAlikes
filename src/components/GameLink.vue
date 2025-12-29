@@ -1,10 +1,10 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+  import { RouterLink } from 'vue-router'
 
-const props = defineProps({
-  text: String,
-  link: String,
-})
+  defineProps({
+    link: String,
+    text: String,
+  })
 </script>
 
 <template>

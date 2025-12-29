@@ -1,70 +1,55 @@
-import { defineConfig, globalIgnores } from 'eslint/config'
-import globals from 'globals'
 import js from '@eslint/js'
-import pluginVue from 'eslint-plugin-vue'
-import perfectionist from 'eslint-plugin-perfectionist'
 import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
+import perfectionist from 'eslint-plugin-perfectionist'
+import pluginVue from 'eslint-plugin-vue'
+import { defineConfig } from 'eslint/config'
+import globals from 'globals'
+import vueParser from 'vue-eslint-parser'
 
-export default defineConfig([
+export default defineConfig(
   {
-    name: 'app/files-to-lint',
-    files: ['**/*.{js,mjs,jsx,vue}'],
+    ignores: ['**/dist/**', '**/coverage/**', 'node_modules/**', '.vite/**', 'public/**'],
   },
 
-  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
+  js.configs.recommended,
+  ...pluginVue.configs['flat/recommended'],
 
   {
+    files: ['**/*.{js,vue}'],
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
       globals: {
         ...globals.browser,
         ...globals.node,
       },
+      parser: vueParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
     },
-  },
-
-  js.configs.recommended,
-
-  ...pluginVue.configs['flat/vue3-recommended'],
-
-  {
+    name: 'app/main-rules',
     plugins: {
-      vue: pluginVue,
       perfectionist,
     },
-
     rules: {
-      'vue/order-in-components': 'error',
-      'vue/component-tags-order': [
-        'error',
-        {
-          order: ['script', 'template', 'style'],
-        },
-      ],
-      'vue/attributes-order': 'error',
-      'vue/no-ref-as-operand': 'error',
-      'vue/no-setup-props-destructure': 'error',
-      'vue/prefer-import-from-vue': 'error',
+      'no-console':
+        process.env.NODE_ENV === 'production' ? ['warn', { allow: ['warn', 'error'] }] : 'off',
+      'no-debugger': 'error',
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+
       'perfectionist/sort-imports': [
         'error',
         {
-          type: 'natural',
           order: 'asc',
-          newlinesBetween: 'always',
+          type: 'natural',
         },
       ],
-      'perfectionist/sort-objects': [
-        'error',
-        {
-          type: 'natural',
-          order: 'asc',
-        },
-      ],
-      'perfectionist/sort-exports': 'error',
-
-      'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+      'perfectionist/sort-objects': ['error', { order: 'asc', type: 'natural' }],
+      'vue/attributes-order': 'error',
+      'vue/block-order': ['error', { order: ['script', 'template', 'style'] }],
+      'vue/multi-word-component-names': 'off',
     },
   },
-  skipFormatting,
-])
+
+  skipFormatting
+)

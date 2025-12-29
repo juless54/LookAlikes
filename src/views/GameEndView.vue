@@ -1,38 +1,39 @@
 <script setup>
-import Button from '@/components/Button.vue'
-import { useGameStore } from '@/stores/game'
-import { useGameStateStore } from '@/stores/gamestate'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+  import { storeToRefs } from 'pinia'
+  import { computed } from 'vue'
+  import { useRouter } from 'vue-router'
 
-// get game data store
-const gameStore = useGameStore()
-const { winnerName, currentFolderName } = storeToRefs(gameStore)
-const { resetPlayers } = gameStore
+  import Button from '@/components/Button.vue'
+  import { useGameStore } from '@/stores/game'
+  import { useGameStateStore } from '@/stores/gamestate'
 
-// get game state store
-const gameStateStore = useGameStateStore()
-const { gameStartPhase, resetGame } = gameStateStore
+  // get game data store
+  const gameStore = useGameStore()
+  const { currentFolderName, winnerName } = storeToRefs(gameStore)
+  const { resetPlayers } = gameStore
 
-// get vue router
-const router = useRouter()
+  // get game state store
+  const gameStateStore = useGameStateStore()
+  const { gameStartPhase, resetGame } = gameStateStore
 
-// impostor image src
-const impostorSrc = computed(() => '/images/games/' + currentFolderName.value + '/impostor.png')
-// innocent image src
-const innocentSrc = computed(() => '/images/games/' + currentFolderName.value + '/innocent.png')
+  // get vue router
+  const router = useRouter()
 
-// go to home page
-function goToHome() {
-  resetGame()
-  resetPlayers()
-  router.push('/')
-}
+  // impostor image src
+  const impostorSrc = computed(() => '/images/games/' + currentFolderName.value + '/impostor.png')
+  // innocent image src
+  const innocentSrc = computed(() => '/images/games/' + currentFolderName.value + '/innocent.png')
 
-function handleClick() {
-  resetGame()
-}
+  // go to home page
+  function goToHome() {
+    resetGame()
+    resetPlayers()
+    router.push('/')
+  }
+
+  function handleClick() {
+    resetGame()
+  }
 </script>
 
 <template>

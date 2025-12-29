@@ -1,60 +1,61 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { useGameStore } from '@/stores/game'
-import { useGameStateStore } from '@/stores/gamestate'
-import { storeToRefs } from 'pinia'
-import Button from '@/components/Button.vue'
-import Modal from '@/components/Modal.vue'
+  import { storeToRefs } from 'pinia'
+  import { ref, computed } from 'vue'
 
-// load game store
-const gameStore = useGameStore()
-const { players, impostorPlayerCount } = storeToRefs(gameStore)
-const { addPlayer, removePlayer } = gameStore
+  import Button from '@/components/Button.vue'
+  import Modal from '@/components/Modal.vue'
+  import { useGameStore } from '@/stores/game'
+  import { useGameStateStore } from '@/stores/gamestate'
 
-// load game state store
-const gameStateStore = useGameStateStore()
-const { gameStartPhase } = gameStateStore
+  // load game store
+  const gameStore = useGameStore()
+  const { impostorPlayerCount, players } = storeToRefs(gameStore)
+  const { addPlayer, removePlayer } = gameStore
 
-// ref for the name input
-const nameInput = ref('')
-// current player index
-const currentIndex = ref(0)
-// current player
-const currentPlayer = computed(() => players.value[currentIndex.value])
-// show or hide player removal modal
-const showRemovalModal = ref(false)
+  // load game state store
+  const gameStateStore = useGameStateStore()
+  const { gameStartPhase } = gameStateStore
 
-// register player
-function registerPlayer() {
-  if (nameInput.value === '') return
-  addPlayer(nameInput.value)
-  nameInput.value = ''
-}
+  // ref for the name input
+  const nameInput = ref('')
+  // current player index
+  const currentIndex = ref(0)
+  // current player
+  const currentPlayer = computed(() => players.value[currentIndex.value])
+  // show or hide player removal modal
+  const showRemovalModal = ref(false)
 
-// start the game
-function startGame() {
-  gameStartPhase()
-}
+  // register player
+  function registerPlayer() {
+    if (nameInput.value === '') return
+    addPlayer(nameInput.value)
+    nameInput.value = ''
+  }
 
-// click on a player name to remove him
-function handlePlayerNameClick(index) {
-  currentIndex.value = index
-  showRemovalModal.value = true
-}
+  // start the game
+  function startGame() {
+    gameStartPhase()
+  }
 
-// remove player from list
-function removePlayerFromGame() {
-  removePlayer(currentPlayer.value.playerName)
-  showRemovalModal.value = false
-  currentIndex.value = 0
-}
+  // click on a player name to remove him
+  function handlePlayerNameClick(index) {
+    currentIndex.value = index
+    showRemovalModal.value = true
+  }
+
+  // remove player from list
+  function removePlayerFromGame() {
+    removePlayer(currentPlayer.value.playerName)
+    showRemovalModal.value = false
+    currentIndex.value = 0
+  }
 </script>
 
 <template>
   <section
     class="relative flex flex-col h-screen w-full bg-bg items-center text-twhite justify-center"
   >
-    <Modal :showModal="showRemovalModal">
+    <Modal :show-modal="showRemovalModal">
       <h2 v-if="currentPlayer" class="text-2xl text-center">
         Vous allez retirer {{ currentPlayer.playerName }}
       </h2>
@@ -64,16 +65,16 @@ function removePlayerFromGame() {
       <div class="space-y-6 flex flex-col items-center">
         <h1 class="text-3xl font-kavoon">Entrez votre nom</h1>
         <input
+          v-model="nameInput"
           type="text"
           placeholder="Nom"
-          v-model="nameInput"
           class="w-full p-2 bg-ubox rounded-md outline-none placeholder:text-tplaceholder"
         />
         <div class="flex flex-row items-center justify-between w-full text-xl">
           <h2>Imposteurs</h2>
           <input
-            type="number"
             v-model.number="impostorPlayerCount"
+            type="number"
             class="size-12 bg-ubox outline-none rounded-md text-center text-tplaceholder"
           />
         </div>
@@ -81,6 +82,7 @@ function removePlayerFromGame() {
       <div class="grid grid-cols-2 gap-4 w-full">
         <div
           v-for="(player, index) in players"
+          :key="index"
           class="bg-box text-center rounded-md w-full p-1 border-4 border-box"
           @click="handlePlayerNameClick(index)"
         >
