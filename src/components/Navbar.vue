@@ -5,52 +5,74 @@
   import { useGameStore } from '@/stores/game'
   import { useGameStateStore } from '@/stores/gamestate'
 
-  // get game data store
+  // stores
   const gameStore = useGameStore()
   const { resetPlayers } = gameStore
 
-  // get game state store
   const gameStateStore = useGameStateStore()
   const { resetGame } = gameStateStore
 
-  // get vue router
   const router = useRouter()
 
-  // show or hide menu
   const showMenu = ref(false)
-
-  // bars for menu icon
-  const menuBar = [0, 1, 2]
-
-  // show or hide menu
   function toggleMenu() {
     showMenu.value = !showMenu.value
   }
 
-  // go to home page
   function goToHome() {
     resetGame()
     resetPlayers()
     router.push('/')
   }
+  function goToImagesGame() {
+    resetGame()
+    router.push('/imagesGame')
+    showMenu.value = false
+  }
+  function goToWordsGame() {
+    resetGame()
+    router.push('/wordsGame')
+    showMenu.value = false
+  }
 </script>
 
 <template>
-  <nav class="flex flex-row items-center justify-between fixed top-0 w-full text-twhite z-10 p-4">
-    <h2 class="font-kavoon text-2xl">LookAlikes</h2>
-    <div class="flex flex-col items-center space-y-1 relative">
-      <div
-        v-for="number in menuBar"
-        :key="number"
-        class="bg-twhite w-10 h-1.5 rounded-md"
-        @click="toggleMenu()"
-      />
-      <div
-        :class="showMenu ? 'translate-x-0' : 'translate-x-[50vw]'"
-        class="absolute top-10 right-0 bg-box w-[30vw] p-2 rounded-md text-center transition-all duration-300 ease-in-out"
-      >
-        <button @click="goToHome()">Accueil</button>
+  <nav class="fixed top-0 left-0 w-full bg-box text-twhite shadow-md z-50">
+    <div class="max-w-6xl mx-auto flex items-center justify-between p-4">
+      <h2 class="font-kavoon text-2xl cursor-pointer" @click="goToHome">LookAlikes</h2>
+
+      <div class="hidden md:flex space-x-6">
+        <button class="hover:underline" @click="goToHome">Accueil</button>
+        <button class="hover:underline" @click="goToImagesGame">Images</button>
+        <button class="hover:underline" @click="goToWordsGame">Mot</button>
       </div>
+
+      <div
+        class="md:hidden flex flex-col justify-between w-6 h-5 cursor-pointer"
+        @click="toggleMenu"
+      >
+        <span
+          class="block h-0.5 w-full bg-twhite transition-transform"
+          :class="showMenu ? 'rotate-45 translate-y-2' : ''"
+        ></span>
+        <span
+          class="block h-0.5 w-full bg-twhite transition-opacity"
+          :class="showMenu ? 'opacity-0' : ''"
+        ></span>
+        <span
+          class="block h-0.5 w-full bg-twhite transition-transform"
+          :class="showMenu ? '-rotate-45 -translate-y-2' : ''"
+        ></span>
+      </div>
+    </div>
+
+    <div
+      v-show="showMenu"
+      class="md:hidden bg-box text-center space-y-4 py-4 transition-all duration-300"
+    >
+      <button class="block w-full hover:underline" @click="goToHome">Accueil</button>
+      <button class="block w-full hover:underline" @click="goToImagesGame">Images</button>
+      <button class="block w-full hover:underline" @click="goToWordsGame">Mot</button>
     </div>
   </nav>
 </template>
