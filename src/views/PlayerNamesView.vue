@@ -69,6 +69,7 @@
           type="text"
           placeholder="Nom"
           class="w-full p-2 bg-ubox rounded-md outline-none placeholder:text-tplaceholder"
+          @keyup.enter="registerPlayer()"
         />
         <div class="flex flex-row items-center justify-between w-full text-xl">
           <h2>Imposteurs</h2>
