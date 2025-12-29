@@ -73,11 +73,18 @@ export const useGameStore = defineStore('game', () => {
     })
 
     // chance of a mister white being in the game (10%)
-    const hasMisterWhite = Math.floor() < 0.1
-    // know if mister white has been chosen or not
+    const hasMisterWhite = Math.random() < 0.1
     let misterWhiteChosen = false
-    // track previous indexes for impostors
     const previousIndexes = [999]
+
+    // get the name of the person who chose the images
+    const chooserName = imagesChooserName?.value?.toLowerCase() || ''
+
+    // filter indexes to exclude the chooser
+    const availableIndexes = players.value
+      .map((p, i) => ({ i, name: p.playerName.toLowerCase() }))
+      .filter(p => p.name !== chooserName)
+      .map(p => p.i)
 
     // attribute impostor roles
     for (let i = 0; i < impostorPlayerCount.value; i++) {
@@ -85,24 +92,22 @@ export const useGameStore = defineStore('game', () => {
 
       // pull a random index if it is already attributed
       while (previousIndexes.includes(index)) {
-        // choose random player
-        index = Math.floor(Math.random() * players.value.length)
+        const randomIdx = Math.floor(Math.random() * availableIndexes.length)
+        index = availableIndexes[randomIdx]
       }
 
       if (hasMisterWhite && !misterWhiteChosen) {
-        // set player as an mister white
         players.value[index].playerRole = 'Mister White'
-        // tell mister white has been chosen
         misterWhiteChosen = true
       } else {
-        // set player as an impostor
         players.value[index].playerRole = 'Imposteur'
       }
+
+      previousIndexes.push(index)
     }
 
     // set the remaining players to normal players
     players.value.forEach(player => {
-      // set player as a normal player
       if (player.playerRole === '') {
         player.playerRole = 'Innocent'
       }
@@ -117,21 +122,12 @@ export const useGameStore = defineStore('game', () => {
     const folders = [...new Set(Object.keys(gameImages).map(path => path.split('/').at(-2)))]
 
     // keep only not used folders
-    const availableFolders = folders.filter(f => !usedFolderNames.value.includes(f))
+    let availableFolders = folders.filter(f => !usedFolderNames.value.includes(f))
 
     // when all folders have been used, choose first folder
     if (!availableFolders.length) {
-      currentFolderName.value = '1'
-
-      // get and set name of the person having chosen the images
-      const txtFile = Object.keys(gameImages)
-        .filter(path => path.includes(`/games/${currentFolderName.value}/`))
-        .map(path => path.split('/').pop())
-        .find(name => name.endsWith('.txt'))
-
-      const txtName = txtFile.split('.').shift()
-      imagesChooserName.value = txtName
-      return
+      usedFolderNames.value = []
+      availableFolders = folders
     }
 
     // choose a random folder
@@ -144,6 +140,12 @@ export const useGameStore = defineStore('game', () => {
       .map(path => path.split('/').pop())
       .find(name => name.endsWith('.txt'))
 
+    if (!txtFile) {
+      imagesChooserName.value = ''
+      currentFolderName.value = chosenFolder
+      usedFolderNames.value.push(chosenFolder)
+      return
+    }
     const txtName = txtFile.split('.').shift()
     imagesChooserName.value = txtName
 

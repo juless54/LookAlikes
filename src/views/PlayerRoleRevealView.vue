@@ -38,9 +38,16 @@
 
     let role = 'innocent'
 
-    if (currentPlayer.value.playerRole === 'Imposteur') role = 'impostor'
+    if (currentPlayer.value.playerRole === 'Imposteur') {
+      role = 'impostor'
+    }
+    console.log(currentPlayer.value.playerRole)
 
-    return '/images/games/' + currentFolderName.value + '/' + role + '.png'
+    if (currentPlayer.value.playerRole !== 'Mister White') {
+      return '/images/games/' + currentFolderName.value + '/' + role + '.png'
+    }
+
+    return ''
   })
 
   // swap to next player
@@ -70,8 +77,9 @@
         :hide-content="hideContent"
         :show-content="showContent"
         :image-src="imageSrc"
+        :is-mister-white="currentPlayer?.playerRole === 'Mister White'"
       />
-      <h2>Image choisie par {{ imagesChooserName }}</h2>
+      <h2 v-if="imagesChooserName">Image choisie par {{ imagesChooserName }}</h2>
       <Button :text="isLastPlayer ? 'Passer aux votes' : 'Joueur suivant'" @click="nextPlayer()" />
     </div>
   </section>

@@ -14,7 +14,6 @@
   const { gameStartPhase } = gameStateStore
 
   const nameInput = ref('')
-  const currentIndex = ref(0)
 
   // 1. Vérification des doublons
   const isDuplicate = computed(() => {

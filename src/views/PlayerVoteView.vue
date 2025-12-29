@@ -64,6 +64,7 @@
         Vous allez éliminer {{ currentPlayer.playerName }}
       </h2>
       <Button text="Confirmer" @click="revealPlayerRole()" />
+      <Button text="Annuler" @click="showEliminationConfirmationModal = false" />
     </Modal>
     <Modal :show-modal="showRoleRevealModal">
       <h2 v-if="currentPlayer" class="text-2xl text-center">
