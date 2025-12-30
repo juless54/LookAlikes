@@ -27,7 +27,7 @@
       <img v-else-if="contentType === 'image'" :src="imageSrc" class="w-full h-full object-cover" />
 
       <!-- Word -->
-      <h2 v-else class="text-xl font-kavoon text-center">
+      <h2 v-else class="text-3xl font-kavoon text-center">
         {{ word }}
       </h2>
     </div>
