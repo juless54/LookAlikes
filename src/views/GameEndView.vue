@@ -9,12 +9,17 @@
 
   // get game data store
   const gameStore = useGameStore()
-  const { currentFolderName, winnerName } = storeToRefs(gameStore)
+  const { currentFolderName, players, winnerName } = storeToRefs(gameStore)
   const { resetPlayers } = gameStore
 
   // get game state store
   const gameStateStore = useGameStateStore()
   const { gameStartPhase, resetGame } = gameStateStore
+
+  // list impostors
+  const impostors = computed(() => players.value.filter(p => p.playerRole === 'Imposteur'))
+
+  const misterWhite = computed(() => players.value.find(p => p.playerRole === 'Mister White'))
 
   // get vue router
   const router = useRouter()
@@ -47,9 +52,23 @@
         <img :src="innocentSrc" alt="innocent" class="w-full h-[17vh] object-cover" />
         <div class="bg-box w-full p-2 text-center text-xl">Innocents</div>
       </div>
-      <div class="flex flex-col items-center w-[70vw] rounded-xl h-auto overflow-hidden">
+      <div
+        v-if="impostors.length"
+        class="flex flex-col items-center w-[70vw] rounded-xl overflow-hidden"
+      >
         <img :src="impostorSrc" alt="impostor" class="w-full h-[17vh] object-cover" />
-        <div class="bg-box w-full p-2 text-center text-xl">Imposteurs</div>
+        <div class="bg-box w-full p-2 text-center text-xl">Imposteurs ({{ impostors.length }})</div>
+        <div class="bg-box w-full text-center text-sm pb-2">
+          {{ impostors.map(p => p.playerName).join(', ') }}
+        </div>
+      </div>
+      <div
+        v-if="misterWhite"
+        class="flex flex-col items-center w-[70vw] rounded-xl overflow-hidden"
+      >
+        <div class="bg-box w-full p-2 text-center text-xl">
+          Mister white ({{ misterWhite.playerName }})
+        </div>
       </div>
       <div class="flex flex-col w-full items-center space-y-4">
         <Button text="Rejouer" @click="gameStartPhase()" />
