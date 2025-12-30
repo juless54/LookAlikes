@@ -8,7 +8,7 @@
 
   const gameStore = useGameStore()
   const { impostorPlayerCount, players } = storeToRefs(gameStore)
-  const { addPlayer, removePlayer } = gameStore
+  const { addPlayer, gameMode, removePlayer } = gameStore
 
   const gameStateStore = useGameStateStore()
   const { gameStartPhase } = gameStateStore
@@ -52,7 +52,10 @@
   >
     <div class="flex flex-col items-center justify-between h-[80vh] w-[80vw]">
       <div class="space-y-6 flex flex-col items-center w-full">
-        <h1 class="text-3xl font-kavoon">Entrez votre nom</h1>
+        <h1 class="text-5xl font-kavoon">
+          {{ gameMode === 'image' ? "Jeu d'images" : 'Jeu de mots' }}
+        </h1>
+        <h2 class="text-3xl font-kavoon">Entrez votre nom</h2>
 
         <div class="w-full relative">
           <input
@@ -88,7 +91,7 @@
           <div
             v-for="(player, index) in players"
             :key="index"
-            class="bg-box text-center rounded-md w-full p-1 border-4 border-box hover:border-red-500/50 cursor-pointer transition-colors relative group"
+            class="bg-box text-center rounded-md w-full p-1 border-4 border-box hover:border-red-500/50 cursor-pointer transition-colors relative group overflow-hidden whitespace-nowrap text-ellipsis"
             @click="handlePlayerNameClick(player)"
           >
             {{ player.playerName }}

@@ -2,27 +2,39 @@
   import IconEye from '@/components/icons/IconEye.vue'
 
   defineProps({
+    contentType: {
+      required: true,
+      type: String,
+    },
     hideContent: Boolean,
     imageSrc: String,
     isMisterWhite: Boolean,
     showContent: Function,
+    word: String,
   })
 </script>
 
 <template>
-  <div class="relative w-full h-[30vh] rounded-xl overflow-hidden border-2 border-box bg-ubox">
+  <div class="relative w-full h-[30vh] rounded-xl overflow-hidden border-2 bg-ubox">
     <div class="w-full h-full flex items-center justify-center">
+      <!-- Mister White -->
       <div v-if="isMisterWhite" class="text-center">
-        <h2 class="text-4xl font-kavoon text-twhite">???</h2>
-        <p class="text-twhite mt-4">Vous êtes Mister White</p>
+        <h2 class="text-4xl font-kavoon">???</h2>
+        <p class="mt-4">Vous êtes Mister White</p>
       </div>
 
-      <img v-else :src="imageSrc" alt="game image" class="w-full h-full object-cover" />
+      <!-- Image -->
+      <img v-else-if="contentType === 'image'" :src="imageSrc" class="w-full h-full object-cover" />
+
+      <!-- Word -->
+      <h2 v-else class="text-xl font-kavoon text-center">
+        {{ word }}
+      </h2>
     </div>
 
     <div
       v-if="hideContent"
-      class="absolute top-0 left-0 w-full h-full bg-ubox flex flex-col items-center justify-center space-y-4 cursor-pointer hover:bg-box transition-colors"
+      class="absolute inset-0 bg-ubox flex flex-col items-center justify-center cursor-pointer"
       @click="showContent"
     >
       <IconEye class="size-12" />

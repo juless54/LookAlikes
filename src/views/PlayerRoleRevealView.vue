@@ -7,59 +7,60 @@
   import { useGameStore } from '@/stores/game'
   import { useGameStateStore } from '@/stores/gamestate'
 
-  // load game state store
+  // --- Stores ---
+  const gameStore = useGameStore()
   const gameStateStore = useGameStateStore()
   const { gameVotePhase } = gameStateStore
 
-  // load game data store
-  const gameStore = useGameStore()
-  const { currentFolderName, imagesChooserName, players } = storeToRefs(gameStore)
+  const { chooserName, currentFolderName, currentWord, gameMode, players } = storeToRefs(gameStore)
 
-  // if the content must be hidden
+  // --- State local ---
   const hideContent = ref(true)
+  const currentPlayerIndex = ref(0)
 
-  // display content
+  // --- Computed ---
+  const currentPlayer = computed(() => {
+    return players.value?.[currentPlayerIndex.value] || null
+  })
+
+  const isLastPlayer = computed(() => {
+    return currentPlayerIndex.value === players.value.length - 1
+  })
+
+  const imageSrc = computed(() => {
+    if (!currentPlayer.value || gameMode.value !== 'image') return ''
+    if (currentPlayer.value.playerRole === 'Mister White') return ''
+
+    const role = currentPlayer.value.playerRole === 'Imposteur' ? 'impostor' : 'innocent'
+
+    if (!currentFolderName.value) return ''
+    return `/images/games/${currentFolderName.value}/${role}.png`
+  })
+
+  const wordToShow = computed(() => {
+    if (!currentPlayer.value || gameMode.value !== 'word') return ''
+    if (!currentWord.value) return ''
+
+    return currentPlayer.value.playerRole === 'Imposteur'
+      ? currentWord.value.impostor
+      : currentWord.value.innocent
+  })
+
+  // --- Methods ---
   function showContent() {
     hideContent.value = false
   }
 
-  // current player index in roles array
-  const currentPlayerIndex = ref(0)
-
-  // current player
-  const currentPlayer = computed(() => players.value[currentPlayerIndex.value])
-
-  // is current player the last to view his role
-  const isLastPlayer = computed(() => currentPlayerIndex.value === players.value.length - 1)
-
-  // image src depending on current game folder and player role
-  const imageSrc = computed(() => {
-    if (!currentPlayer.value) return ''
-
-    let role = 'innocent'
-
-    if (currentPlayer.value.playerRole === 'Imposteur') {
-      role = 'impostor'
-    }
-
-    if (currentPlayer.value.playerRole !== 'Mister White') {
-      return '/images/games/' + currentFolderName.value + '/' + role + '.png'
-    }
-
-    return ''
-  })
-
-  // swap to next player
   function nextPlayer() {
+    hideContent.value = true
+
     if (isLastPlayer.value) {
       gameVotePhase()
       currentPlayerIndex.value = 0
-      hideContent.value = true
       return
     }
 
     currentPlayerIndex.value++
-    hideContent.value = true
   }
 </script>
 
@@ -70,15 +71,21 @@
         <h1 v-if="currentPlayer" class="text-3xl font-kavoon">
           Joueur {{ currentPlayer.playerName }}
         </h1>
-        <h2 class="text-xl">Prenez le temps de bien regarder</h2>
+        <h2 v-if="gameMode === 'image'" class="text-xl">Prenez le temps de bien regarder</h2>
+        <h2 v-else class="text-2xl">Retenez bien le mot</h2>
       </div>
+
       <GameImageOrWord
         :hide-content="hideContent"
         :show-content="showContent"
         :image-src="imageSrc"
+        :word="wordToShow"
         :is-mister-white="currentPlayer?.playerRole === 'Mister White'"
+        :content-type="gameMode"
       />
-      <h2 v-if="imagesChooserName">Image choisie par {{ imagesChooserName }}</h2>
+
+      <h2 v-if="chooserName" class="text-xl">choisi par {{ chooserName }}</h2>
+
       <Button :text="isLastPlayer ? 'Passer aux votes' : 'Joueur suivant'" @click="nextPlayer()" />
     </div>
   </section>

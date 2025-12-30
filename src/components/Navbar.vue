@@ -7,7 +7,7 @@
 
   // stores
   const gameStore = useGameStore()
-  const { resetPlayers } = gameStore
+  const { resetPlayers, startGame } = gameStore
 
   const gameStateStore = useGameStateStore()
   const { resetGame } = gameStateStore
@@ -24,14 +24,18 @@
     resetPlayers()
     router.push('/')
   }
+
   function goToImagesGame() {
     resetGame()
-    router.push('/imagesGame')
+    startGame('image')
+    router.push('/imageGame')
     showMenu.value = false
   }
+
   function goToWordsGame() {
     resetGame()
-    router.push('/wordsGame')
+    startGame('word')
+    router.push('/wordGame')
     showMenu.value = false
   }
 </script>
