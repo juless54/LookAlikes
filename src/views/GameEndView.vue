@@ -71,7 +71,7 @@
           v-if="gameMode === 'image'"
           :src="innocentSrc"
           alt="innocent"
-          class="w-full h-[17vh] object-cover"
+          class="w-full h-[17vh] object-contain bg-box"
         />
         <div v-if="gameMode === 'word'" class="bg-box w-full p-2 text-center text-xl">
           {{ chosenContent.innocent }}
@@ -88,7 +88,7 @@
           v-if="gameMode === 'image'"
           :src="impostorSrc"
           alt="impostor"
-          class="w-full h-[17vh] object-cover"
+          class="w-full h-[17vh] object-contain bg-box"
         />
         <div v-if="gameMode === 'word'" class="bg-box w-full p-2 text-center text-xl">
           {{ chosenContent.impostor }}

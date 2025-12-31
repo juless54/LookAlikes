@@ -24,7 +24,11 @@
       </div>
 
       <!-- Image -->
-      <img v-else-if="contentType === 'image'" :src="imageSrc" class="w-full h-full object-cover" />
+      <img
+        v-else-if="contentType === 'image'"
+        :src="imageSrc"
+        class="w-full h-full object-contain"
+      />
 
       <!-- Word -->
       <h2 v-else class="text-3xl font-kavoon text-center">
